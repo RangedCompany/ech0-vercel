@@ -130,6 +130,6 @@ bump NEW_VERSION:
     echo "  # 2. Commit + tag:"
     echo "       git commit -am 'chore(release): v{{NEW_VERSION}}'"
     echo "       git tag -a v{{NEW_VERSION}} -m 'Release v{{NEW_VERSION}}'"
-    echo "  # 3. Push to trigger release workflow:"
+    echo "  # 3. Push the commit and version tag:"
     echo "       git push origin main"
     echo "       git push origin v{{NEW_VERSION}}"

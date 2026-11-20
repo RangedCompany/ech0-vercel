@@ -31,7 +31,7 @@ bump NEW_VERSION:
     bun run scripts/release.ts bump {{NEW_VERSION}}
 
 # Cut a CLI release end to end: check, bump, commit, tag cli-vX.Y.Z and push.
-# The tag starts release-cli.yml; set ECH0_CLI_DRY=1 to stop after the checks.
+# Set ECH0_CLI_DRY=1 to stop after the checks.
 release NEW_VERSION:
     #!/usr/bin/env bash
     set -euo pipefail

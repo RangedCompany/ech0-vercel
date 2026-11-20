@@ -85,7 +85,7 @@ Pour exercer le navigateur, installer Playwright Python 1.55.0 dans un environne
 
 Le test sqld et le test HTTP lancent leurs propres bases dans des répertoires temporaires. Sans ECH0_TEST_SQLD, la suite Go omet le test d’intégration distant. Le test HTTP démarre deux processus et couvre le premier administrateur concurrent, la connexion, le device flow, les écritures Echo, les livraisons du worker, les journaux, les médias et la sauvegarde. Le simulateur objet applique les conditions de création et injecte une panne de suppression. Il ne valide pas la signature cryptographique comme le ferait R2. Son serveur S3 de test reçoit effectivement les octets de staging, simule un échec de partie, assemble le multipart et sert le ZIP privé. La recette sur Cloudflare reste ouverte.
 
-Le workflow [Vercel local compatibility](../.github/workflows/vercel-local.yml) se lance manuellement depuis GitHub Actions. Il utilise une base éphémère et un serveur objet de test. Seules les commandes locales ont été exécutées pour cette itération.
+Le workflow [Vercel local compatibility](../.github/workflows/vercel-local.yml) s’exécute à chaque push sur `main` et à la demande depuis GitHub Actions. Il utilise une base éphémère et un serveur objet de test.
 
 ## Installer une instance de recette
 

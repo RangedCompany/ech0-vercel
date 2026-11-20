@@ -13,9 +13,8 @@
  * the commit/tag/push steps for a manual release.
  *
  * `release` runs the full check set, bumps, commits `chore(cli-release): vX.Y.Z`,
- * creates `cli-vX.Y.Z` and pushes the branch and tag. The tag starts
- * `.github/workflows/release-cli.yml`, which builds the binaries and publishes
- * the npm packages; `--dry-run` stops after the checks.
+ * creates `cli-vX.Y.Z` and pushes the branch and tag. Use `--dry-run` to
+ * stop after the checks.
  */
 
 import { join, resolve } from "node:path";
@@ -131,4 +130,4 @@ run(["git", "tag", "-a", tag, "-m", `Release ech0 CLI v${version}`]);
 info(`pushing ${branch} and ${tag}`);
 run(["git", "push", "origin", branch]);
 run(["git", "push", "origin", tag]);
-info(`pushed ${tag}; watch release-cli.yml in GitHub Actions for the build and npm publish`);
+info(`pushed ${tag}. Build the archives with just cli dist ${version}`);
