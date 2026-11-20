@@ -78,9 +78,6 @@ quality-report.md
 .idea
 .VSCodeCounter
 
-# dotenv
-.env
-
 .cursor-go
 .claude
 
@@ -89,5 +86,10 @@ quality-report.md
 .worktrees/
 .pnpm-store/vecspike
 
-# wrangler local cache (see docs/assets/keynotes/wrangler.jsonc)
+# Wrangler local cache
 .wrangler/
+
+# Vercel project metadata and local secrets
+/.vercel/
+.env*
+!.env.example

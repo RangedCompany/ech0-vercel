@@ -2,7 +2,7 @@ name: Vercel local compatibility
 
 on:
   pull_request:
-    branches: [feat/vercel]
+    branches: [main]
   workflow_dispatch:
 
 permissions:

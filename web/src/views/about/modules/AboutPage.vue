@@ -117,7 +117,7 @@ const onPointerUp = (e: PointerEvent) => {
   } catch {}
 }
 
-const FALLBACK_REPO = 'https://github.com/lin-snow/Ech0'
+const FALLBACK_REPO = 'https://github.com/RangedCompany/ech0-vercel'
 const FALLBACK_AUTHOR = 'L1nSn0w'
 const FALLBACK_LICENSE = 'AGPL-3.0-or-later'
 

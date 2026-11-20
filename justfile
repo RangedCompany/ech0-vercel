@@ -6,7 +6,6 @@ mod site
 mod hub
 mod design
 mod cli "apps/cli/justfile"
-mod docker
 
 VERSION       := `git describe --tags --always 2>/dev/null || echo unknown`
 BUILD_TIME    := `date -u +%Y-%m-%dT%H:%M:%SZ`

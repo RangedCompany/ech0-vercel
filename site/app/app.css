@@ -1,50 +1,74 @@
 @import "tailwindcss";
 
-@theme {
-  --font-sans:
-    "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-serif: "Source Serif 4", Georgia, "Times New Roman", ui-serif, serif;
-  --color-app: #f6f4f0;
-  --color-sand-1: #f6f4f0;
-  --color-sand-2: #f5f4f1;
-  --color-sand-6: #d7d4cf;
-  --color-sand-11: #64605b;
-  --color-sand-12: #21201c;
+:root {
+  color: #232323;
+  background: #fff;
+  font-family: system-ui, sans-serif;
 }
 
-html,
-body {
-  @apply bg-app font-sans text-base text-sand-11 antialiased;
+.docs-markdown {
+  line-height: 1.65;
+  overflow-wrap: anywhere;
 }
 
-.docs-markdown :not(pre) > code {
-  border-radius: 0.25rem;
-  background-color: var(--color-sand-2);
-  padding: 0 0.25rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.8125rem;
-  color: var(--color-sand-12);
+.docs-markdown h1 {
+  font-size: 2rem;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.docs-markdown h2,
+.docs-markdown h3 {
+  margin-top: 1.75rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.docs-markdown h2 {
+  font-size: 1.4rem;
+}
+
+.docs-markdown p,
+.docs-markdown ul,
+.docs-markdown ol,
+.docs-markdown pre,
+.docs-markdown table {
+  margin: 0.9rem 0;
+}
+
+.docs-markdown ul,
+.docs-markdown ol {
+  padding-left: 1.4rem;
+}
+
+.docs-markdown ul {
+  list-style: disc;
+}
+.docs-markdown ol {
+  list-style: decimal;
+}
+.docs-markdown a {
+  text-decoration: underline;
+}
+.docs-markdown code {
+  font-size: 0.9em;
 }
 
 .docs-markdown pre {
-  background-color: var(--color-sand-2);
+  overflow: auto;
+  padding: 0.75rem;
+  background: #f5f5f5;
 }
 
-.docs-markdown pre code.hljs {
-  padding: 0.5rem 0.625rem !important;
-  background-color: transparent !important;
+.docs-markdown table {
+  display: block;
+  overflow-x: auto;
 }
 
-.docs-markdown .hljs {
-  color: var(--color-sand-12);
-  background-color: var(--color-sand-2) !important;
-}
-
-.docs-markdown .hljs-addition {
-  background-color: color-mix(in srgb, var(--color-sand-2) 92%, #22863a);
-}
-
-.docs-markdown .hljs-deletion {
-  background-color: color-mix(in srgb, var(--color-sand-2) 92%, #b31d28);
+.docs-markdown td,
+.docs-markdown th {
+  border: 1px solid #ddd;
+  padding: 0.45rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
 }

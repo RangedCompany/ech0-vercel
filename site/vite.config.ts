@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 lin-snow
 
+import { fileURLToPath } from "node:url";
 import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
 import type { Plugin } from "vite";
-import { defineConfig } from "vite";
+import { defineConfig, searchForWorkspaceRoot } from "vite";
 
 function reactRouterDevSpuriousRequestFilter(): Plugin {
   return {
@@ -36,6 +37,14 @@ export default defineConfig({
     reactRouterDevSpuriousRequestFilter(),
     reactRouter(),
   ],
+  server: {
+    fs: {
+      allow: [
+        searchForWorkspaceRoot(process.cwd()),
+        fileURLToPath(new URL("..", import.meta.url)),
+      ],
+    },
+  },
   resolve: {
     tsconfigPaths: true,
   },

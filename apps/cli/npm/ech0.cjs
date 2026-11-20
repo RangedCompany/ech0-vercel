@@ -26,7 +26,7 @@ if (!SUPPORTED[platform] || !SUPPORTED[platform].includes(arch)) {
     .join(", ");
   console.error(
     `ech0: unsupported platform ${platform}/${arch}. Supported: ${list}. ` +
-      "Build from source: https://github.com/lin-snow/ech0/tree/main/apps/cli",
+      "Build from source: https://github.com/RangedCompany/ech0-vercel/tree/main/apps/cli",
   );
   process.exit(1);
 }

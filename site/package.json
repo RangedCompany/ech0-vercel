@@ -3,7 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "prebuild": "rm -rf public/docs-assets && mkdir -p public/docs-assets && test -d docs/imgs && cp -R docs/imgs public/docs-assets/ || true",
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "serve -s build/client",

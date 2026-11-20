@@ -65,13 +65,10 @@ func PrintGreetings(port string) {
 		infoStyle().Render("🎈 "+titleStyle().Render("Port")+": "+highlight().Render(port)),
 		infoStyle().Render("🧙 "+titleStyle().Render("Author")+": "+highlight().Render("L1nSn0w")),
 		infoStyle().Render(
-			"👉 "+titleStyle().Render("Website")+": "+highlight().Render("https://ech0.app/"),
-		),
-		infoStyle().Render(
 			"👉 "+titleStyle().Render(
 				"GitHub",
 			)+": "+highlight().Render(
-				"https://github.com/lin-snow/Ech0",
+				versionPkg.RepoURL,
 			),
 		),
 	)

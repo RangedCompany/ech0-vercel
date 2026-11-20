@@ -49,19 +49,3 @@ updates:
       actions-updates:
         patterns:
           - "*"
-
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "03:45"
-      timezone: "UTC"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "docker"
-    groups:
-      docker-updates:
-        patterns:
-          - "*"

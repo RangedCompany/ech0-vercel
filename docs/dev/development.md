@@ -1,106 +1,17 @@
-# Development Guide
+# Développement local
 
-This guide covers local development for **Ech0** — environment setup, hot reload, and front-/back-end integration. For higher-level architecture see [`AGENTS.md`](../../AGENTS.md) and [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
+Prérequis du dépôt : Go 1.27.4, un compilateur C avec CGO et les en-têtes SQLite, Node.js 26, pnpm 12.16.1 et `just` avec Bash. Sous Windows, utiliser de préférence un environnement Linux pour reproduire les builds et tests du portage.
 
-## Backend Requirements
-
-📌 **Go 1.27.4+**
-
-📌 **C Compiler**
-When using CGO-dependent libraries such as `go-sqlite3`, install:
-- Windows:
-    - [MinGW-w64](https://winlibs.com/)
-    - Add the `bin` directory to `PATH` after extraction
-- macOS: `brew install gcc`
-- Linux: `sudo apt install build-essential`
-
-📌 **Google Wire**
-Install [wire](https://github.com/google/wire) for dependency injection file generation:
-- `go install github.com/google/wire/cmd/wire@latest`
-
-📌 **Golangci-Lint**
-Install [Golangci-Lint](https://golangci-lint.run/) for linting and formatting:
-- Run `golangci-lint run` in the project root for linting
-- Run `golangci-lint fmt` in the project root for formatting
-
-📌 **Air (Optional, Backend Hot Reload)**
-- Recommended via justfile: `just air-install`
-- Or install manually: `go install github.com/air-verse/air@latest`
-
-📌 **OpenAPI**
-The spec is generated from Huma handler types — there is no `swag` step:
-- Run `just openapi` to regenerate `internal/openapi/openapi.yaml`; `just openapi-check` fails on drift.
-- Serve docs at `http://localhost:6277/api/docs`, raw spec at `/api/openapi.json|.yaml`.
-
-📌 **Environment / `.env`**
-All variables, defaults and the env-vs-admin-settings boundary are documented in [usage/configuration.md](../usage/configuration.md).
-
-📌 **Event Runtime Parameters (Busen)**
-- `ECH0_EVENT_DEFAULT_BUFFER` (default `512`) / `ECH0_EVENT_DEFAULT_OVERFLOW` (`block`, the default; `fail_fast` / `drop_newest` / `drop_oldest`)
-- `ECH0_EVENT_SYSTEM_BUFFER` (default `64`)
-- `ECH0_EVENT_AGENT_BUFFER` (default `128`) / `ECH0_EVENT_AGENT_PARALLELISM` (default `2`)
-- `ECH0_EVENT_WEBHOOK_POOL_WORKERS` / `ECH0_EVENT_WEBHOOK_POOL_QUEUE` (default `6` / `6`)
-
-📌 **Agent (Copilot) Parameters**
-- `ECH0_AGENT_TIMEOUT_SECONDS` — generation budget (seconds) for one Copilot chat run: model streaming plus non-interactive tools; default `300`, `<=0` disables it. Time spent waiting on a person is credited back rather than charged here.
-- `ECH0_AGENT_MAX_ROUNDS` — how many tool-calling rounds one run may take before it must answer; default `20`.
-- `ECH0_AGENT_ASK_TIMEOUT_SECONDS` — how long a run parks waiting for you to answer a question or confirm a write (`ask_user`, `create_echo`, `update_echo`, `delete_echo`); default `300`. A round that expires performs nothing.
-
-📌 **OpenAPI Docs Panel**
-- `ECH0_OPENAPI_DOCS_RENDERER` — renderer for the `/api/docs` panel: `stoplight` (default, Huma's built-in Stoplight Elements, loaded from CDN) or `scalar` (self-hosted offline Scalar, asset embedded in the binary — no network needed). Unknown values fall back to `stoplight`.
-
-## Frontend Requirements
-
-📌 **NodeJS v26.0.0+, PNPM v10.30.0+**
-> Note: if you need multiple Node.js versions, use [fnm](https://github.com/Schniz/fnm) to manage them.
-
-## Start Backend & Frontend
-
-**Step 1: Backend (in Ech0 root directory)**
-```shell
-just run # normal backend start (equivalent to go run main.go serve)
-just dev # backend hot reload with Air
-```
-> If dependency injection relationships change, run `wire` first in `ech0/internal/di/` to regenerate `wire_gen.go`.
-
-**Step 2: Frontend (new terminal)**
-```shell
-cd web # enter frontend directory
-
-pnpm install # run if dependencies are not installed
-
-pnpm dev # start frontend preview
-# or run from project root: just web dev
-```
-
-**Step 3: After both are running**
-- Frontend preview: `http://localhost:5173` (actual port shown in terminal after start)
-- Backend preview: `http://localhost:6277` (default backend port is 6277)
-
-> When importing packages in a layered architecture, use standardized alias names:
-> - model layer: `xxxModel`
-> - util layer: `xxxUtil`
-> - handler layer: `xxxHandler`
-> - service layer: `xxxService`
-> - repository layer: `xxxRepository`
-
-## Pre-PR Checklist
-
-```shell
-just check        # backend fmt + lint + openapi, web format + lint + i18n:check
-just wire-check   # ensure wire_gen.go is up-to-date
-go build ./...
+```sh
+pnpm -C web install --frozen-lockfile
 pnpm -C web build
+export CGO_ENABLED=1
+go build -o ./ech0 ./cmd/ech0
+./ech0 serve
 ```
 
-See [`CONTRIBUTING.md`](../../CONTRIBUTING.md) for the full PR workflow.
+Ouvrir `http://localhost:6277`. Le premier compte devient propriétaire. Pour conserver les sessions entre deux redémarrages, définir `JWT_SECRET` dans l’environnement ou dans le fichier local `.env`. Le [guide des réglages](../usage/configuration.md) décrit les valeurs par défaut.
 
-## More Reference Docs
+Pour le rechargement de Vue, lancer `just web dev` dans un second terminal et ouvrir `http://localhost:5173`. Vite transmet les appels API à Go. `just dev` relance le serveur avec Air.
 
-- [`auth-design.md`](./auth-design.md) — auth model
-- [`access-token-scope-design.md`](./access-token-scope-design.md) — access token scopes
-- [`i18n-contract.md`](./i18n-contract.md) — i18n contract between front-end and back-end
-- [`logging.md`](./logging.md) — structured logging conventions
-- [`timezone-design.md`](./timezone-design.md) — timezone handling
-- [`table-design-standard.md`](./table-design-standard.md) — admin panel table conventions
-- [`helm-release-validation.md`](./helm-release-validation.md) — Helm chart release validation
+Pour reproduire le mode Vercel avec sqld et deux processus, suivre les [commandes de recette](../VERCEL_MIGRATION.md#reproduire-les-contrôles).

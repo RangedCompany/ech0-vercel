@@ -54,7 +54,7 @@
               @open-chat="chatLauncherOpen = true"
             />
             <a
-              :href="settingStore.hello?.repo_url || 'https://github.com/lin-snow/Ech0'"
+              :href="settingStore.hello?.repo_url || 'https://github.com/RangedCompany/ech0-vercel'"
               target="_blank"
               rel="noopener noreferrer"
               class="home-aside__version"

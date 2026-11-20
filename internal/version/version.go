@@ -20,7 +20,7 @@ const (
 )
 
 // RepoURL can be set by distributors at build time to their corresponding source.
-var RepoURL = "https://github.com/lin-snow/Ech0"
+var RepoURL = "https://github.com/RangedCompany/ech0-vercel"
 
 var Commit = "unknown"
 

@@ -31,7 +31,7 @@ La cible conserve la même origine HTTPS et le routeur Gin. Les assets immuables
 | Export ZIP, téléchargement, import Ech0, Capsule et destinations fs/S3 | Adaptation | Le snapshot web utilise une capture cohérente et une publication multipart. Les imports Ech0 et Capsule et l’export Capsule utilisent encore le disque et le gestionnaire de jobs du processus. Ils nécessitent des étapes partagées, des lots et une publication cohérente. |
 | Import Memos | Bloqué en amont | Le panneau affiche `memosUnavailable`. La méthode Import de `internal/migrator/importer/memos/importer.go` retourne un résultat vide. La révision auditée ne fournit aucun import de données Memos à porter. |
 | Dashboard, logs historiques, live WS et SSE | Adaptation | Le dashboard interroge un fichier et s’abonne aux logs du processus. Persister le flux filtré avec rétention. Tester séparément l’upgrade Gorilla sur le runtime Go et les reconnexions multi-instances. La disponibilité des WebSockets Vercel sur tous les plans ne valide pas cet adaptateur. [WebSockets](https://vercel.com/docs/functions/websockets) |
-| CLI, TUI, Capsule CLI, Docker, sites satellites | Compatible | Conserver les entrées natives et le volume data. Le TUI interactif s’exécute sur le poste de l’opérateur. Les commandes natives incluent `ech0 export snapshot`, `ech0 import snapshot`, les sous-commandes Capsule et le TUI. Les imports snapshot métier reprennent les domaines choisis par l’amont. |
+| CLI, TUI, Capsule CLI et sites satellites | Compatible | Conserver les entrées natives et le volume data. Le TUI interactif s’exécute sur le poste de l’opérateur. Les commandes natives incluent `ech0 export snapshot`, `ech0 import snapshot`, les sous-commandes Capsule et le TUI. Les imports snapshot métier reprennent les domaines choisis par l’amont. |
 
 ## Données, sécurité et exploitation
 
@@ -45,11 +45,6 @@ Préparer un bucket R2 Standard privé, une clé S3 limitée à ce bucket et un 
 
 Conserver le filtrage SSRF de pkg/egress pour Connect et les webhooks, l’échappement Markdown côté rendu, les restrictions d’origine et de cookies pour les mutations, les paramètres liés SQL et les vérifications de scopes. Vérifier les réponses privées et leur cache au CDN, les permissions de suppression et l’absence de secrets dans les logs, snapshots partagés, variables VITE et bundles publics. Pour les déploiements AGPL, fournir aux utilisateurs le code source correspondant à la révision servie et conserver LICENSE et NOTICE.
 
-## Budget mensuel indicatif
-
-Un blog personnel non commercial utilisant 1 Go SQL et 3 Go-mois de médias, avec 1 million de lignes lues, 50 000 lignes écrites, 10 000 opérations R2 A et 100 000 opérations B, peut rester à 0 USD/mois tant que les autres quotas Hobby sont respectés. Compter les scans vectoriels, les logs, les sauvegardes et les retries. L’inférence dépend du fournisseur déjà choisi par l’opérateur. Turso Free indique 5 Go, 500 millions de lignes lues et 10 millions écrites par mois. R2 Standard inclut 10 Go-mois, un million d’opérations A et dix millions B. [Turso](https://turso.tech/pricing) · [R2](https://developers.cloudflare.com/r2/pricing/) · [Vercel](https://vercel.com/docs/functions/limitations)
-
-
 ## État vérifié sur la branche
 
 | Domaine | Résultat observé | Reste à vérifier ou à réaliser |
@@ -62,11 +57,11 @@ Un blog personnel non commercial utilisant 1 Go SQL et 3 Go-mois de médias, ave
 | Effets métier, courriels et webhooks | Une erreur d’insertion de l’effet annule l’Echo. Le worker traite la création, la modification et la suppression sur deux processus. Les reprises gardent un identifiant stable pour le destinataire. | Livraison distante et déduplication chez les destinataires. |
 | IA et administration | Réindexation par lots avec reprise et annulation. Un fournisseur d’embeddings de test alimente libSQL, qui calcule la distance attendue. Les confirmations de Copilot et la consultation des journaux sont partagées. La reprise SSE et la réception WebSocket sont testées localement. | Fournisseur IA réel, navigateur, quotas de durée et upgrade WebSocket dans le runtime Vercel. |
 | Sauvegardes | Le panneau produit un ZIP natif dans des invocations distinctes. Le test HTTP relit plus de 10 Mio après une écriture concurrente, un échec multipart et une relivraison. SQLite valide l’intégrité de l’image. Le test du convertisseur retrouve la distance vectorielle 5 après restauration. | Import web durable de gros snapshots, import et export Capsule, reprise de l’ensemble des objets médias et vérification des volumes hébergés. |
-| Client et build | Build Vue de production, i18n, 176 tests Vitest et 135 tests CLI sous Linux. Un test CLI envoie une vidéo de 5 Mio vers un serveur objet distinct et vérifie que le jeton applicatif reste sur l’origine API. Build Go Linux CGO avec frontend embarqué d’environ 65 Mio. | Docker et environnements hébergés. Le poids du binaire local ne donne pas le poids du bundle final de Vercel. |
+| Client et build | Build Vue de production, i18n, 176 tests Vitest et 135 tests CLI sous Linux. Un test CLI envoie une vidéo de 5 Mio vers un serveur objet distinct et vérifie que le jeton applicatif reste sur l’origine API. Build Go Linux CGO avec frontend embarqué d’environ 65 Mio. | Environnements hébergés. Le poids du binaire local ne donne pas le poids du bundle final de Vercel. |
 
 ## Reproduire les contrôles
 
-À la racine de la branche feat/vercel, utiliser Go 1.27.4, un compilateur C, les en-têtes SQLite, Node 26 et pnpm 12.16.1. Le répertoire template/dist doit exister avant les builds Go. Le script de build Vercel récupère les en-têtes correspondant à la version verrouillée de go-sqlite3.
+À la racine du dépôt, utiliser Go 1.27.4, un compilateur C, les en-têtes SQLite, Node 26 et pnpm 12.16.1. Le répertoire template/dist doit exister avant les builds Go. Le script de build Vercel récupère les en-têtes correspondant à la version verrouillée de go-sqlite3.
 
 ```sh
 pnpm -C web install --frozen-lockfile
@@ -84,31 +79,17 @@ go build -o ./ech0 ./cmd/ech0
 python3 scripts/vercel/smoke.py --sqld "$ECH0_TEST_SQLD" --cli "$PWD/ech0" --server "$PWD/server"
 ```
 
-La suite Go de référence a passé 107 paquets sous Linux avant les adaptations. La suite du fork en passe 111 avec sqld activé. Les contrôles de la branche incluent `go test ./...` avec sqld, `go vet ./...`, `go build ./...`, les huit étapes de `just check` et le build de distribution Vercel. Les tests ciblés `go test -race ./internal/event/outbox ./internal/journal ./internal/repository/file ./internal/migrator/snapshot` passent. Les tests du CLI Bun passent sous Linux. Sous Windows, cinq assertions du CLI dépendant des chemins Unix échouent. Le binaire natif x86-64 a aussi été compilé en liaison statique avec musl et les en-têtes SQLite du module Go verrouillé. Le test a démarré deux fois `ech0 serve` sur le même fichier SQLite et vérifié la persistance d’un Echo privé et de la session. L’exécution de l’image Docker reste à vérifier, le moteur étant absent de la machine.
+La suite Go de référence a passé 107 paquets sous Linux avant les adaptations. La suite du fork en passe 111 avec sqld activé. Les contrôles de la branche incluent `go test ./...` avec sqld, `go vet ./...`, `go build ./...`, les huit étapes de `just check` et le build de distribution Vercel. Les tests ciblés `go test -race ./internal/event/outbox ./internal/journal ./internal/repository/file ./internal/migrator/snapshot` passent. Les tests du CLI Bun passent sous Linux. Sous Windows, cinq assertions du CLI dépendant des chemins Unix échouent. Le binaire natif x86-64 a aussi été compilé en liaison statique avec musl et les en-têtes SQLite du module Go verrouillé. Le test a démarré deux fois `ech0 serve` sur le même fichier SQLite et vérifié la persistance d’un Echo privé et de la session.
 
 Pour exercer le navigateur, installer Playwright Python 1.55.0 dans un environnement de test et lui fournir un exécutable Chromium. Ajouter `--browser-python /chemin/vers/python --chrome /chemin/vers/chrome` à la commande smoke. L’authentificateur virtuel CTAP2 et les identifiants du compte de test sont éphémères. Le navigateur démarre chaque cérémonie sur un processus Go et la termine sur l’autre. [Playwright CDP](https://playwright.dev/python/docs/api/class-cdpsession) · [WebAuthn dans Chromium](https://chromedevtools.github.io/devtools-protocol/tot/WebAuthn/)
 
 Le test sqld et le test HTTP lancent leurs propres bases dans des répertoires temporaires. Sans ECH0_TEST_SQLD, la suite Go omet le test d’intégration distant. Le test HTTP démarre deux processus et couvre le premier administrateur concurrent, la connexion, le device flow, les écritures Echo, les livraisons du worker, les journaux, les médias et la sauvegarde. Le simulateur objet applique les conditions de création et injecte une panne de suppression. Il ne valide pas la signature cryptographique comme le ferait R2. Son serveur S3 de test reçoit effectivement les octets de staging, simule un échec de partie, assemble le multipart et sert le ZIP privé. La recette sur Cloudflare reste ouverte.
 
-Le workflow [Vercel local compatibility](../.github/workflows/vercel-local.yml) reprend les contrôles sur une pull request vers `feat/vercel` ou sur déclenchement manuel. Il utilise une base éphémère et un serveur objet de test. Seules les commandes locales ont été exécutées pour cette itération.
+Le workflow [Vercel local compatibility](../.github/workflows/vercel-local.yml) reprend les contrôles sur une pull request vers `main` ou sur déclenchement manuel. Il utilise une base éphémère et un serveur objet de test. Seules les commandes locales ont été exécutées pour cette itération.
 
 ## Installer une instance de recette
 
-1. Partir de la branche feat/vercel. Créer une base **libSQL** de recette dans Turso, relever son URL et créer un jeton limité à cette base. Fournir les secrets uniquement au processus qui les utilise. Sur une base vide, exécuter `ech0 prepare-libsql`. Réexécuter cette commande avant de servir une nouvelle version du fork. Le cold start vérifie la version attendue. [Turso CLI](https://docs.turso.tech/cli/db/create)
-2. Créer un bucket R2 Standard privé et une clé S3 en lecture/écriture restreinte au bucket. Laisser les accès publics désactivés. Autoriser uniquement les origines HTTPS de recette dans CORS, avec PUT, GET, HEAD et les en-têtes Content-Type, If-None-Match et Range. Le navigateur ajoute Content-Length au PUT. Depuis un navigateur de cette origine, contrôler le preflight et les en-têtes de la requête signée. [CORS R2](https://developers.cloudflare.com/r2/buckets/cors/) · [URL présignées](https://developers.cloudflare.com/r2/api/s3/presigned-urls/)
-3. Utiliser la racine du dépôt comme racine de projet Vercel. vercel.json déclare le service Go backend, le service Node queue, la liaison interne ECH0_SERVICE_URL, le routage et le cron quotidien. Renseigner les valeurs de .env.example dans l’environnement Preview, avec les secrets distincts de la production. Le préfixe VITE rend une variable publique. Les identifiants du bucket et de la base sont exclusivement côté serveur. [Services Vercel](https://vercel.com/docs/services) · [Runtime Go](https://vercel.com/docs/functions/runtimes/go)
-4. En preview autorisée, vérifier /healthz, /api/openapi.json, /, une route SPA et une route inconnue sous /.well-known. Créer le premier compte sur une instance de recette à accès restreint. Tester ensuite le même compte après un démarrage à froid, le téléchargement privé, l’envoi direct et la livraison effective de la queue. Les cases ouvertes ci-dessous conditionnent la mise en production.
-
-| Variables | Valeur et rôle |
-|---|---|
-| ECH0_DB_TYPE, TURSO_DATABASE_URL, TURSO_AUTH_TOKEN | libsql, URL de la base et jeton de données. HTTP sans jeton est accepté uniquement sur les IP de loopback. |
-| JWT_SECRET, CRON_SECRET | Deux secrets aléatoires distincts. Le premier doit rester stable entre instances et versions. Le second protège le cron et son worker. |
-| ECH0_SETTING_SERVER_URL, ECH0_AUTH_WEBAUTHN_RP_ID, ECH0_AUTH_WEBAUTHN_ORIGINS | URL publique HTTPS, nom de domaine sans schéma, origines HTTPS autorisées séparées par des virgules. Enregistrer également les callbacks chez les fournisseurs d’identité. |
-| ECH0_OBJECT_ENABLED, ECH0_UPLOAD_VERIFIED_DIRECT | true dans le service Go. Le build Vue Vercel active VITE_ECH0_OBJECT_UPLOADS. |
-| ECH0_S3_PROVIDER, ECH0_S3_REGION, ECH0_S3_BUCKET, ECH0_S3_ENDPOINT | r2, auto, nom du bucket et endpoint S3 du compte Cloudflare. |
-| ECH0_S3_ACCESS_KEY, ECH0_S3_SECRET_KEY, ECH0_S3_USE_SSL, ECH0_S3_USE_PATH_STYLE | Identifiants S3 dédiés au bucket, TLS et adressage par chemin. Les coordonnées persistées dans les réglages peuvent primer sur les valeurs initiales. |
-| ECH0_LOG_FILE_ENABLE, ECH0_STORAGE_DATA_ROOT | false et /tmp/ech0-files. Le répertoire temporaire appartient à l’instance. |
-| ECH0_SERVICE_URL | Fourni au consommateur par la liaison de services Vercel. |
+Suivre le [guide de déploiement](../DEPLOYMENT.md) et renseigner les [variables](usage/configuration.md).
 
 ## Migrer une base SQLite et répéter une restauration
 
@@ -148,6 +129,6 @@ Configurer une règle R2 d’abandon des uploads multipart incomplets pour couvr
 - [x] Conserver les journaux en base avec la durée ECH0_LOG_FILE_MAX_AGE et filtrer les champs de secrets avant indexation. Les deux transports du panneau lisent le même curseur. Les tests locaux couvrent historique multi-processus, reprise SSE et réception WebSocket. Une instance interrompue avant le vidage du tampon peut perdre ses dernières lignes.
 - [x] Enregistrer et utiliser une passkey dans Chromium sur loopback et vérifier le refus du rejeu entre deux processus.
 - [ ] Valider en HTTPS le domaine WebAuthn, OAuth social/OIDC, le captcha, les limites CORS du bucket et les reconnexions réelles.
-- [ ] Tester Docker, la preview Hobby, R2 et Turso hébergés, les limites de durée, les streams, les budgets réels et l’ensemble des accès privés.
+- [ ] Tester la preview Hobby, R2 et Turso hébergés, les limites de durée, les streams, les budgets réels et l’ensemble des accès privés.
 
 Pour synchroniser l’amont, intégrer les révisions sur une branche de travail, vérifier les nouveaux modèles, routes, effets asynchrones et accès disque, régénérer Wire et OpenAPI, puis répéter la matrice SQLite/libSQL. Mettre à jour la révision de référence après la recette.

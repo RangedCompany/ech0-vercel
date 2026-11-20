@@ -63,7 +63,6 @@ func DoVersion() {
 	}
 	items = append(items,
 		tuiUtil.CLIInfoItem{Title: "Author", Msg: versionPkg.Author},
-		tuiUtil.CLIInfoItem{Title: "Website", Msg: "https://ech0.app/"},
 		tuiUtil.CLIInfoItem{Title: "License", Msg: versionPkg.License},
 		tuiUtil.CLIInfoItem{Title: "Source", Msg: versionPkg.RepoURL},
 		tuiUtil.CLIInfoItem{},

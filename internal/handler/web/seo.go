@@ -22,6 +22,7 @@ import (
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	"github.com/lin-snow/ech0/internal/util/reqinfo"
+	"github.com/lin-snow/ech0/internal/version"
 	"github.com/lin-snow/ech0/pkg/viewer"
 )
 
@@ -623,7 +624,7 @@ func websiteJSONLD(siteTitle, description, origin string) string {
 			"url":   origin,
 			"logo":  origin + defaultLogoImage,
 		},
-		"sameAs": []string{"https://github.com/lin-snow/Ech0"},
+		"sameAs": []string{version.RepoURL},
 	})
 }
 
