@@ -4,7 +4,9 @@
 | --- | --- |
 | Go | `go test ./...` |
 | Concurrence Go | `just test-race` |
+| Mocks Go générés | `just mocks-check` |
 | Vue | `pnpm -C web test:unit` |
+| Traductions Vue | `pnpm -C web i18n:check` |
 | Client CLI | `bun test`, depuis `apps/cli` |
 | File Vercel | `node --test scripts/vercel/schedule.test.js` |
 | Vérifications avant PR | `just check` |
