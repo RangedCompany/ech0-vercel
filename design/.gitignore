@@ -1,7 +1,0 @@
-node_modules/
-dist/
-prototype/dist/
-.vite/
-*.tsbuildinfo
-.DS_Store
-*.log

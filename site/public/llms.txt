@@ -1,6 +1,0 @@
-# Ech0 Vercel
-
-- [Documentation](/docs)
-- [Déploiement](/docs/DEPLOYMENT)
-- [Migration](/docs/VERCEL_MIGRATION)
-- [Développement local](/docs/dev/development)

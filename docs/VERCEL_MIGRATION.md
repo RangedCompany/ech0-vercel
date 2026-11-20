@@ -4,7 +4,7 @@
 
 ## Application actuelle et cible
 
-`cmd/ech0/main.go` initialise le processus avant Cobra. `serve` construit le graphe Wire, amorce la configuration métier, lance le gestionnaire de travaux, le planificateur et le serveur TCP. Gin distribue les routes Huma et les routes brutes aux mêmes services Go. Le binaire inclut `template/dist`, produit par Vite depuis `web` avec Node 26 et pnpm 12.16.1. Le module Go demande 1.27.4. Les applications `hub` et `site` ont leurs propres builds.
+`cmd/ech0/main.go` initialise le processus avant Cobra. `serve` construit le graphe Wire, amorce la configuration métier, lance le gestionnaire de travaux, le planificateur et le serveur TCP. Gin distribue les routes Huma et les routes brutes aux mêmes services Go. Le binaire inclut `template/dist`, produit par Vite depuis `web` avec Node 26 et pnpm 12.16.1. Le module Go demande 1.27.4.
 
 La cible conserve la même origine HTTPS et le routeur Gin. Les assets immuables peuvent être servis par le CDN. Les pages dont les métadonnées sont rendues par Go, la découverte, OAuth, MCP et les routes API doivent passer par Go avant toute règle SPA. Le service Go écoute sur PORT et délègue à un handler HTTP qui réutilise le graphe d’injection à chaud. Les pages et les assets embarqués passent actuellement par ce service. Les données partagées vont dans libSQL, les octets dans un bucket S3 privé, les fichiers de travail bornés dans le répertoire temporaire. Le démarrage doit échouer explicitement si le stockage distant est indisponible. [Runtime Go](https://vercel.com/docs/functions/runtimes/go)
 

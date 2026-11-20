@@ -1,3 +1,0 @@
-# Hub Ech0
-
-Le Hub fusionne les publications publiques des instances de son registre. Les appels publics sont effectués depuis le navigateur et nécessitent l’autorisation CORS de l’origine du Hub.

@@ -1,6 +1,6 @@
 # Architecture d’Ech0
 
-Ech0 associe une application Vue 3 et une API Go. Vite compile l’interface dans `template/dist` et le paquet `template` l’embarque dans le binaire. `web/` est l’interface de l’instance. Le site documentaire et le Hub sont des applications indépendantes.
+Ech0 associe une application Vue 3 et une API Go. Vite compile l’interface dans `template/dist` et le paquet `template` l’embarque dans le binaire. `web/` est l’interface de l’instance.
 
 | Entrée | Exécution | État durable |
 | --- | --- | --- |

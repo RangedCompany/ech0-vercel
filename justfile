@@ -2,9 +2,6 @@
 set shell := ["bash", "-cu"]
 
 mod web
-mod site
-mod hub
-mod design
 mod cli "apps/cli/justfile"
 
 VERSION       := `git describe --tags --always 2>/dev/null || echo unknown`

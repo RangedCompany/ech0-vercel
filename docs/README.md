@@ -5,6 +5,7 @@
 - [Déploiement sur Vercel](../DEPLOYMENT.md)
 - [Migration SQLite vers Turso, restauration et compatibilité](VERCEL_MIGRATION.md)
 - [Utiliser Ech0](usage/utiliser-ech0.md)
+- [Confidentialité des données de l’instance](legal/confidentialite.md)
 - [Variables d’environnement et réglages](usage/configuration.md)
 - [Stockage des médias](usage/storage-migration.md) et [format Capsule](usage/capsule.md)
 - [MCP](usage/mcp-usage.md), [découverte des agents](usage/agent-discovery.md) et [webhooks](usage/webhook-usage.md)
