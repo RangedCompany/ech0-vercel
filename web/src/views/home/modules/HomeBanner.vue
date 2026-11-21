@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <!-- Copyright (C) 2025-2026 lin-snow -->
 <template>
-  <section class="home-banner" aria-label="Intro">
+  <section class="home-banner" :aria-label="t('homeBio.introLabel')">
     <div class="home-banner__top">
       <p class="home-banner__line">{{ t('homeBio.tagline') }}</p>
     </div>
@@ -11,7 +11,7 @@
         class="home-banner__powered"
         :aria-label="t('about.linkAriaLabel')"
       >
-        Powered by Ech0
+        {{ t('homeBio.poweredBy') }}
       </RouterLink>
       <RouterLink
         :to="{ name: 'about' }"
@@ -61,12 +61,6 @@ const { t } = useI18n()
   gap: 0.75rem;
 }
 
-@media (width <= 420px) {
-  .home-banner {
-    flex-wrap: wrap;
-  }
-}
-
 .home-banner__line {
   margin: 0;
   font-family: 'Songti SC', STSong, var(--font-family-display);
@@ -97,6 +91,7 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: none;
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 50%;
@@ -119,8 +114,7 @@ const { t } = useI18n()
 }
 
 .home-banner__about-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-  font-size: 2.5rem;
+  width: 100%;
+  height: 100%;
 }
 </style>

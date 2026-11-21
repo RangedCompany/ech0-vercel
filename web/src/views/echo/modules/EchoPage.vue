@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <!-- Copyright (C) 2025-2026 lin-snow -->
 <template>
-  <div class="px-3 pb-4 py-2 mt-4 sm:mt-6 mb-10 mx-auto flex justify-center items-center">
-    <div class="w-full sm:max-w-lg mx-auto">
+  <div class="px-3 sm:px-5 pb-4 py-2 mt-4 sm:mt-6 mb-10 mx-auto">
+    <div class="w-full max-w-3xl mx-auto">
       <div v-if="echo" class="w-full sm:mt-1 mx-auto">
         <TheEchoDetail :echo="echo" />
         <TheEchoInteractions />
@@ -21,7 +21,6 @@ import TheEchoDetail from '@/components/advanced/echo/cards/TheEchoDetail.vue'
 import TheEchoInteractions from '@/components/advanced/echo/cards/TheEchoInteractions.vue'
 import TheLoadingIndicator from '@/components/common/TheLoadingIndicator.vue'
 import { clearSeoOverride, setSeoOverride } from '@/composables/useSeoOverride'
-import { DEFAULT_SEO_DESCRIPTION } from '@/composables/useSeoHead'
 import { DEFAULT_SITE_TITLE } from '@/constants/site'
 import { useEchoStore } from '@/stores'
 import { getEchoImages } from '@/utils/echo'
@@ -68,8 +67,8 @@ const applyEchoSeo = () => {
   if (!value) return
 
   const text = seoPlainText(value.content)
-  const title = seoTruncate(text.split('\n')[0] || 'Echo', 60)
-  const description = seoTruncate(text.replace(/\n/g, ' ') || DEFAULT_SEO_DESCRIPTION, 160)
+  const title = seoTruncate(text.split('\n')[0] || t('seo.echo'), 60)
+  const description = seoTruncate(text.replace(/\n/g, ' ') || t('seo.defaultDescription'), 160)
   const image = absoluteSeoUrl(getEchoImages(value)[0]?.url)
   const createdAt = Number(value.created_at)
   const publishedAt =
@@ -98,7 +97,7 @@ const applyEchoSeo = () => {
   })
 }
 
-watch(echo, applyEchoSeo)
+watch([echo, locale], applyEchoSeo)
 
 watch(
   () => route.params.echoId,

@@ -26,7 +26,11 @@
     "add": "添加",
     "actions": "操作",
     "optional": "可选",
-    "none": "暂无"
+    "none": "暂无",
+    "expandOptions": "展开选项列表",
+    "backToTop": "返回顶部",
+    "loading": "加载中…",
+    "startupLoading": "请稍等片刻"
   },
   "editor": {
     "tagPickerTooltip": "选择标签",
@@ -398,7 +402,7 @@
   "homeNav": {
     "themeToggleTitle": "切换主题（下一个：{mode}）",
     "localeToggleTitle": "切换显示语言",
-    "localeSyncFailed": "语言偏好同步失败",
+    "localeSyncFailed": "无法切换语言",
     "themeLight": "浅色",
     "themeDark": "深色",
     "themeSunny": "晴日"
@@ -456,10 +460,14 @@
     "publish": "发布",
     "plaza": "探索",
     "status": "状态",
-    "tags": "标签"
+    "tags": "标签",
+    "version": "版本：{version}",
+    "navigationLabel": "主导航"
   },
   "homeBio": {
-    "tagline": "欢迎光临"
+    "tagline": "欢迎光临",
+    "poweredBy": "由 Ech0 驱动",
+    "introLabel": "简介"
   },
   "homeFooter": {},
   "homeFeed": {
@@ -490,10 +498,12 @@
     "tooltipVersion": "版本",
     "jumpToEchoDetail": "查看对应 Echo 详情",
     "randomCommentLoading": "正在挑选一条精选评论...",
-    "noFeaturedComment": "暂无精选评论可展示。"
+    "noFeaturedComment": "暂无精选评论可展示。",
+    "title": "连接"
   },
   "heatmap": {
-    "tooltip": "{date}: {count} 条"
+    "tooltip": "{date}: {count} 条",
+    "title": "每日活动"
   },
   "echoDetail": {
     "share": "分享",
@@ -547,7 +557,9 @@
     "capVerifiedAriaLabel": "验证通过",
     "capErrorAriaLabel": "验证出错，请重试",
     "publishedAt": "已于 {time} 发布到评论列表。",
-    "submittedAtPending": "已于 {time} 提交，审核通过后会显示在评论列表中。"
+    "submittedAtPending": "已于 {time} 提交，审核通过后会显示在评论列表中。",
+    "featured": "热门",
+    "avatar": "头像"
   },
   "echoCard": {
     "privateStatus": "私密状态",
@@ -682,7 +694,10 @@
     "deleteConfirmDesc": "删除后该设备将无法登录，请谨慎操作",
     "deleted": "已删除",
     "newDeviceNamePrompt": "新的设备名称",
-    "updated": "已更新"
+    "updated": "已更新",
+    "passkey": "通行密钥",
+    "rpId": "WebAuthn RP ID",
+    "origins": "WebAuthn 来源"
   },
   "oauth2Setting": {
     "title": "OAuth2设置",
@@ -720,7 +735,18 @@
     "redirectAllowlistInvalid": "Redirect Allowlist 需为 http/https URL",
     "corsOriginsInvalid": "CORS Origins 需为 http/https URL",
     "bindSuccess": "OAuth2账号绑定成功",
-    "bindFailed": "OAuth2账号绑定失败，请重试"
+    "bindFailed": "OAuth2账号绑定失败，请重试",
+    "clientId": "客户端 ID",
+    "clientSecret": "客户端密钥",
+    "callback": "回调 URL",
+    "authUrl": "授权 URL",
+    "tokenUrl": "令牌 URL",
+    "userInfoUrl": "用户信息 URL",
+    "scopes": "权限范围",
+    "issuer": "签发者",
+    "jwks": "JWKS URL",
+    "redirectAllowlist": "允许的重定向",
+    "corsOrigins": "允许的 CORS 来源"
   },
   "exportSetting": {
     "title": "数据导出",
@@ -1137,7 +1163,8 @@
   },
   "recentCard": {
     "mysteriousRecent": "作者最近很神秘～",
-    "generating": "生成中..."
+    "generating": "生成中...",
+    "title": "近期摘要"
   },
   "websocket": {
     "invalidMessage": "收到无效的 WebSocket 消息"
@@ -1315,5 +1342,27 @@
     "switchAccount": "切换账户",
     "adminRequired": "只有管理员可以授权设备登录。",
     "securityHint": "只授权你在自己终端发起的请求。"
+  },
+  "seo": {
+    "defaultDescription": "Ech0 是轻量、开源且可自托管的微博客，用于分享想法、笔记与链接。",
+    "panel": "管理面板",
+    "widget": "小组件",
+    "echo": "回声",
+    "about": "关于",
+    "zen": "禅模式",
+    "homeDescription": "在 Ech0 时间线上发布和浏览想法、笔记与链接。",
+    "panelDescription": "Ech0 管理面板。",
+    "authDescription": "登录您的 Ech0 空间。",
+    "deviceDescription": "批准通过命令行登录此 Ech0 实例的请求。",
+    "oauthDescription": "批准 MCP 客户端访问此 Ech0 实例的请求。",
+    "widgetDescription": "可嵌入其他网站的 Ech0 小组件。",
+    "initDescription": "初始化您的 Ech0 实例。",
+    "hubDescription": "发现其他已连接 Ech0 实例的内容。",
+    "chatDescription": "使用 AI 回顾并总结您之前发布的回声。",
+    "zenDescription": "以沉浸式瀑布流浏览所有回声。",
+    "echoDescription": "查看共享的 Ech0 帖子。",
+    "aboutDescription": "此 Ech0 实例的版权、许可和作者信息。",
+    "privacyDescription": "此 Ech0 实例的隐私政策。",
+    "notFoundDescription": "找不到请求的页面。"
   }
 }

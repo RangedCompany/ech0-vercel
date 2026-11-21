@@ -22,5 +22,21 @@
   { "id": "comment_manager.subtitle", "translation": "Kommentarfunktion, Moderationsregeln und Captcha zentral verwalten." },
   { "id": "dashboard.logs.success", "translation": "Systemlogs erfolgreich abgerufen" },
   { "id": "dashboard.logs.tail_invalid", "translation": "tail muss eine positive Zahl sein" },
-  { "id": "dashboard.check_update_failed", "translation": "Prüfung auf Updates fehlgeschlagen" }
+  { "id": "dashboard.check_update_failed", "translation": "Prüfung auf Updates fehlgeschlagen" },
+  { "id": "auth.credentials_required", "translation": "Benutzername und Passwort sind erforderlich" },
+  { "id": "auth.password_incorrect", "translation": "Falsches Passwort" },
+  { "id": "auth.password_too_long", "translation": "Das Passwort ist zu lang (maximal 72 Byte)" },
+  { "id": "user.not_found", "translation": "Benutzer nicht gefunden" },
+  { "id": "user.name_taken", "translation": "Benutzername ist bereits vergeben" },
+  { "id": "user.email_required", "translation": "E-Mail-Adresse ist erforderlich" },
+  { "id": "user.email_invalid", "translation": "Ungültige E-Mail-Adresse" },
+  { "id": "user.limit_reached", "translation": "Benutzerlimit erreicht" },
+  { "id": "user.registration_disabled", "translation": "Die Registrierung ist auf dieser Instanz deaktiviert" },
+  { "id": "init.already_done", "translation": "Diese Instanz wurde bereits eingerichtet" },
+  { "id": "init.owner_exists", "translation": "Ein Inhaberkonto ist bereits vorhanden" },
+  { "id": "init.required", "translation": "Richten Sie zuerst das Inhaberkonto ein" },
+  { "id": "auth.login_success", "translation": "Angemeldet" },
+  { "id": "user.register_success", "translation": "Konto erstellt" },
+  { "id": "user.update_success", "translation": "Benutzer aktualisiert" },
+  { "id": "init.success", "translation": "Inhaberkonto eingerichtet" }
 ]

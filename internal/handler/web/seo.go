@@ -19,6 +19,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	i18nUtil "github.com/lin-snow/ech0/internal/i18n"
+	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	"github.com/lin-snow/ech0/internal/util/reqinfo"
@@ -27,11 +29,12 @@ import (
 )
 
 const (
-	defaultSiteTitle   = "Ech0"
-	defaultDescription = "Ech0 is a next-generation open-source self-hosted platform built for individuals. It is lightweight and low-cost, making it easy to publish and share your ideas, writing, and links."
-	defaultCoverImage  = "/og-cover.jpg"
-	defaultLogoImage   = "/Ech0.png"
-	defaultLang        = "zh-CN"
+	defaultSiteTitle     = "Ech0"
+	defaultDescription   = "Ech0 is a next-generation open-source self-hosted platform built for individuals. It is lightweight and low-cost, making it easy to publish and share your ideas, writing, and links."
+	defaultCoverImage    = "/og-cover.jpg"
+	defaultLogoImage     = "/Ech0.png"
+	defaultLang          = string(commonModel.DefaultLocale)
+	defaultDescriptionFR = "Ech0 est une plateforme libre et auto-hébergée pour publier et partager vos idées, vos textes et vos liens."
 
 	coverImageWidth  = 1200
 	coverImageHeight = 630
@@ -64,85 +67,116 @@ type EchoReader interface {
 // here is answered with 404 so search engines never index a soft 404; the shell
 // is still returned so the client router can render its own not-found view.
 type spaRoute struct {
-	title       string
-	description string
-	noindex     bool
+	title         string
+	description   string
+	titleFR       string
+	descriptionFR string
+	noindex       bool
 }
 
 var notFoundRoute = spaRoute{
-	title:       "404",
-	description: "Requested page was not found.",
-	noindex:     true,
+	title:         "404",
+	description:   "Requested page was not found.",
+	titleFR:       "404",
+	descriptionFR: "La page demandée est introuvable.",
+	noindex:       true,
 }
 
 var spaRoutes = map[string]spaRoute{
 	"/": {
-		title:       "Home",
-		description: "Ech0 home timeline for publishing and browsing thoughts, notes, and links.",
+		title:         "Home",
+		description:   "Ech0 home timeline for publishing and browsing thoughts, notes, and links.",
+		titleFR:       "Accueil",
+		descriptionFR: "Le fil Ech0 pour publier et retrouver des idées, des notes et des liens.",
 	},
 	"/publish": {
-		title:       "Home",
-		description: "Ech0 home timeline for publishing and browsing thoughts, notes, and links.",
+		title:         "Home",
+		description:   "Ech0 home timeline for publishing and browsing thoughts, notes, and links.",
+		titleFR:       "Accueil",
+		descriptionFR: "Le fil Ech0 pour publier et retrouver des idées, des notes et des liens.",
 	},
 	"/hub": {
-		title:       "Hub",
-		description: "Discover and explore curated content in Ech0 hub.",
+		title:         "Hub",
+		description:   "Discover and explore curated content in Ech0 hub.",
+		titleFR:       "Explorer",
+		descriptionFR: "Découvrez une sélection de contenus dans l’espace Explorer d’Ech0.",
 	},
 	"/about": {
-		title:       "About",
-		description: "Copyright, license and author information for this Ech0 instance.",
+		title:         "About",
+		description:   "Copyright, license and author information for this Ech0 instance.",
+		titleFR:       "À propos",
+		descriptionFR: "Droits d’auteur, licence et informations sur cette instance Ech0.",
 	},
 	"/auth": {
-		title:       "Sign In",
-		description: "Sign in to your Ech0 workspace.",
-		noindex:     true,
+		title:         "Sign In",
+		description:   "Sign in to your Ech0 workspace.",
+		titleFR:       "Connexion",
+		descriptionFR: "Connectez-vous à votre instance Ech0.",
+		noindex:       true,
 	},
 	"/device": {
-		title:       "Device Authorization",
-		description: "Approve a CLI sign-in request for this Ech0 instance.",
-		noindex:     true,
+		title:         "Device Authorization",
+		description:   "Approve a CLI sign-in request for this Ech0 instance.",
+		titleFR:       "Autorisation d’appareil",
+		descriptionFR: "Autorisez une demande de connexion en ligne de commande à cette instance Ech0.",
+		noindex:       true,
 	},
 	"/oauth/authorize": {
-		title:       "MCP Authorization",
-		description: "Approve an MCP client request for this Ech0 instance.",
-		noindex:     true,
+		title:         "MCP Authorization",
+		description:   "Approve an MCP client request for this Ech0 instance.",
+		titleFR:       "Autorisation MCP",
+		descriptionFR: "Autorisez un client MCP à se connecter à cette instance Ech0.",
+		noindex:       true,
 	},
 	"/widget": {
-		title:       "Widget",
-		description: "Ech0 embeddable widget.",
-		noindex:     true,
+		title:         "Widget",
+		description:   "Ech0 embeddable widget.",
+		titleFR:       "Widget",
+		descriptionFR: "Widget intégrable Ech0.",
+		noindex:       true,
 	},
 	"/init": {
-		title:       "Initialize",
-		description: "Initialize your Ech0 instance.",
-		noindex:     true,
+		title:         "Initialize",
+		description:   "Initialize your Ech0 instance.",
+		titleFR:       "Initialisation",
+		descriptionFR: "Configurez votre instance Ech0.",
+		noindex:       true,
 	},
 	"/chat": {
-		title:       "Chat",
-		description: "Reflect on and summarize your past echos with AI.",
-		noindex:     true,
+		title:         "Chat",
+		description:   "Reflect on and summarize your past echos with AI.",
+		titleFR:       "Discussion",
+		descriptionFR: "Explorez et résumez vos Echos avec l’IA.",
+		noindex:       true,
 	},
 	"/zen": {
-		title:       "Zen",
-		description: "Browse all echos in an immersive masonry view.",
-		noindex:     true,
+		title:         "Zen",
+		description:   "Browse all echos in an immersive masonry view.",
+		titleFR:       "Zen",
+		descriptionFR: "Parcourez tous vos Echos dans une vue en mosaïque.",
+		noindex:       true,
 	},
 }
 
 var panelRoute = spaRoute{
-	title:       "Panel",
-	description: "Ech0 management panel.",
-	noindex:     true,
+	title:         "Panel",
+	description:   "Ech0 management panel.",
+	titleFR:       "Administration",
+	descriptionFR: "Panneau d’administration Ech0.",
+	noindex:       true,
 }
 
 // privacyRoute is rendered only when a policy is configured; an empty policy
 // must answer 404 so a soft-404 never gets indexed.
 var privacyRoute = spaRoute{
-	title:       "Privacy Policy",
-	description: "Privacy policy for this Ech0 instance.",
+	title:         "Privacy Policy",
+	description:   "Privacy policy for this Ech0 instance.",
+	titleFR:       "Politique de confidentialité",
+	descriptionFR: "Politique de confidentialité de cette instance Ech0.",
 }
 
 var (
+	shellLangPattern   = regexp.MustCompile(`(?i)<html[[:space:]]+lang="[^"]*"`)
 	codeFencePattern   = regexp.MustCompile("(?s)```.*?```")
 	htmlTagPattern     = regexp.MustCompile(`(?s)</?[a-zA-Z][^>]*>|<!--.*?-->`)
 	imagePattern       = regexp.MustCompile(`!\[[^\]]*\]\([^)]*\)`)
@@ -236,13 +270,12 @@ func (shell spaShell) render(headHTML, noscriptHTML, lang string) []byte {
 	out := replaceRange(shell.doc, shell.bodyStart, shell.bodyEnd, noscriptHTML)
 	out = replaceRange(out, shell.headStart, shell.headEnd, headHTML)
 
-	if lang != "" && lang != defaultLang {
-		out = bytes.Replace(
-			out,
-			[]byte(`lang="`+defaultLang+`"`),
-			[]byte(`lang="`+lang+`"`),
-			1,
-		)
+	// Replace the actual build's language, not a hard-coded previous default,
+	// so the generated shell and older builds both respect the instance setting.
+	if lang != "" {
+		if match := shellLangPattern.FindIndex(out); match != nil {
+			out = replaceRange(out, match[0], match[1], `<html lang="`+html.EscapeString(lang)+`"`)
+		}
 	}
 
 	return out
@@ -304,6 +337,7 @@ func (webHandler *WebHandler) servePrivacyPage(ctx *gin.Context, routePath strin
 	route := privacyRoute
 	if description := strings.ReplaceAll(plainText(settings.PrivacyPolicy), "\n", " "); description != "" {
 		route.description = truncateRunes(description, echoDescriptionMaxLen)
+		route.descriptionFR = route.description
 	}
 	webHandler.servePage(ctx, routePath, http.StatusOK, nil, route)
 }
@@ -319,6 +353,7 @@ func (webHandler *WebHandler) servePage(
 	body := webHandler.shell.render(meta.headHTML(), meta.NoScript, meta.Lang)
 
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
+	ctx.Header("Content-Language", meta.Lang)
 	setCacheControlHeader(ctx, "/index.html")
 	if meta.NoIndex {
 		ctx.Header("X-Robots-Tag", robotsNoIndex)
@@ -336,7 +371,14 @@ func (webHandler *WebHandler) buildPageMeta(
 ) pageMeta {
 	settings := webHandler.siteSettings()
 	origin := resolveSiteOrigin(request)
-	lang := normalizeLang(settings.DefaultLocale)
+	lang := i18nUtil.ResolveLocale(settings.DefaultLocale)
+	french := lang == string(commonModel.LocaleFrFR)
+	fallbackDescription := defaultDescription
+	readFullPost := "Read the full post"
+	if french {
+		fallbackDescription = defaultDescriptionFR
+		readFullPost = "Lire la publication complète"
+	}
 	canonical := origin + routePath
 
 	meta := pageMeta{
@@ -359,7 +401,7 @@ func (webHandler *WebHandler) buildPageMeta(
 
 	if echo != nil {
 		meta.Title = pageTitle(settings.SiteTitle, echoTitle(echo))
-		meta.Description = echoDescription(echo)
+		meta.Description = echoDescription(echo, fallbackDescription)
 		meta.Type = "article"
 		meta.PublishedAt = time.Unix(echo.CreatedAt, 0).UTC().Format(time.RFC3339)
 
@@ -372,14 +414,18 @@ func (webHandler *WebHandler) buildPageMeta(
 		}
 
 		meta.JSONLD = echoJSONLD(echo, canonical, origin, settings.SiteTitle, meta.Image, lang, meta.Description)
-		meta.NoScript = echoNoScript(echo, canonical, meta.Title)
+		meta.NoScript = echoNoScript(echo, canonical, meta.Title, readFullPost)
 		return meta
 	}
 
-	meta.Title = pageTitle(settings.SiteTitle, route.title)
-	meta.Description = route.description
+	title, description := route.title, route.description
+	if french {
+		title, description = route.titleFR, route.descriptionFR
+	}
+	meta.Title = pageTitle(settings.SiteTitle, title)
+	meta.Description = description
 	if strings.TrimSpace(meta.Description) == "" {
-		meta.Description = defaultDescription
+		meta.Description = fallbackDescription
 	}
 	meta.JSONLD = websiteJSONLD(settings.SiteTitle, meta.Description, origin)
 
@@ -464,14 +510,6 @@ func resolveSiteOrigin(request *http.Request) string {
 	return reqinfo.Origin(request)
 }
 
-func normalizeLang(raw string) string {
-	lang := strings.TrimSpace(raw)
-	if lang == "" {
-		return defaultLang
-	}
-	return lang
-}
-
 func pageTitle(siteTitle, pageTitle string) string {
 	title := strings.TrimSpace(pageTitle)
 	if title == "" || title == siteTitle {
@@ -490,10 +528,10 @@ func echoTitle(echo *echoModel.Echo) string {
 	return "Echo"
 }
 
-func echoDescription(echo *echoModel.Echo) string {
+func echoDescription(echo *echoModel.Echo, fallback string) string {
 	text := strings.ReplaceAll(plainText(echo.Content), "\n", " ")
 	if text == "" {
-		return defaultDescription
+		return fallback
 	}
 	return truncateRunes(text, echoDescriptionMaxLen)
 }
@@ -666,7 +704,7 @@ func echoJSONLD(
 	})
 }
 
-func echoNoScript(echo *echoModel.Echo, canonical, title string) string {
+func echoNoScript(echo *echoModel.Echo, canonical, title, readFullPost string) string {
 	text := truncateRunes(strings.ReplaceAll(plainText(echo.Content), "\n", " "), echoNoScriptMaxLen)
 	if text == "" {
 		return ""
@@ -679,7 +717,9 @@ func echoNoScript(echo *echoModel.Echo, canonical, title string) string {
 	out.WriteString(html.EscapeString(text))
 	out.WriteString(`</p><p><a href="`)
 	out.WriteString(html.EscapeString(canonical))
-	out.WriteString(`">Read the full post</a></p></article></noscript>`)
+	out.WriteString(`">`)
+	out.WriteString(html.EscapeString(readFullPost))
+	out.WriteString(`</a></p></article></noscript>`)
 
 	return out.String()
 }

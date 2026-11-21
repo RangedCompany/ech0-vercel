@@ -12,9 +12,6 @@ type SeoSystemSetting = {
   site_title?: string
 }
 
-export const DEFAULT_SEO_DESCRIPTION =
-  'Ech0 is a next-generation open-source self-hosted platform built for individuals. It is lightweight and low-cost, making it easy to publish and share your ideas, writing, and links.'
-
 const DEFAULT_OG_IMAGE = '/og-cover.jpg'
 const OG_IMAGE_WIDTH = 1200
 const OG_IMAGE_HEIGHT = 630
@@ -68,7 +65,7 @@ const updateJsonLd = (payload: Record<string, unknown>) => {
 
 export const useSeoHead = (systemSetting: Ref<SeoSystemSetting>) => {
   const route = useRoute()
-  const { locale } = useI18n()
+  const { t, locale } = useI18n()
 
   // The server already rendered article meta for this document; rewriting it
   // before the echo payload arrives would replace a correct card with a
@@ -96,10 +93,12 @@ export const useSeoHead = (systemSetting: Ref<SeoSystemSetting>) => {
     }
 
     const siteTitle = (systemSetting.value.site_title || DEFAULT_SITE_TITLE).trim()
-    const pageTitle = resolvePageTitle(siteTitle, activeOverride?.title ?? route.meta.title)
+    const routeTitle = typeof route.meta.titleKey === 'string' ? t(route.meta.titleKey) : ''
+    const pageTitle = resolvePageTitle(siteTitle, activeOverride?.title ?? routeTitle)
     const routeDescription =
-      typeof route.meta.description === 'string' ? route.meta.description.trim() : ''
-    const description = activeOverride?.description || routeDescription || DEFAULT_SEO_DESCRIPTION
+      typeof route.meta.descriptionKey === 'string' ? t(route.meta.descriptionKey) : ''
+    const description =
+      activeOverride?.description || routeDescription || t('seo.defaultDescription')
     const baseUrl = resolveSiteBaseUrl()
     const canonicalUrl = new URL(route.path || '/', `${baseUrl}/`).toString()
     const noIndex = route.meta.noindex === true
@@ -206,8 +205,8 @@ export const useSeoHead = (systemSetting: Ref<SeoSystemSetting>) => {
   watch(
     () => [
       route.fullPath,
-      route.meta.title,
-      route.meta.description,
+      route.meta.titleKey,
+      route.meta.descriptionKey,
       route.meta.noindex,
       seoOverride.value,
       locale.value,

@@ -31,6 +31,31 @@ func runExecute(t *testing.T, res Response) *httptest.ResponseRecorder {
 	return rec
 }
 
+func TestExecute_FrenchAuthenticationMessages(t *testing.T) {
+	r := gin.New()
+	r.Use(i18n.Middleware())
+	r.GET("/bad", Execute(func(*gin.Context) Response {
+		return Response{Err: errors.New(commonModel.PASSWORD_INCORRECT)}
+	}))
+	r.GET("/ok", Execute(func(*gin.Context) Response {
+		return Response{Msg: commonModel.LOGIN_SUCCESS}
+	}))
+
+	rec := httptest.NewRecorder()
+	r.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/bad?lang=fr-CA", nil))
+	require.Equal(t, http.StatusBadRequest, rec.Code)
+	require.Equal(t, "fr-FR", rec.Header().Get("Content-Language"))
+	res := helpers.ParseResult(t, rec)
+	require.Equal(t, "Mot de passe incorrect", res.Msg)
+	require.Equal(t, commonModel.MsgKeyAuthPasswordIncorrect, res.MessageKey)
+	require.Empty(t, res.ErrorCode)
+
+	rec = httptest.NewRecorder()
+	r.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/ok?lang=fr", nil))
+	require.Equal(t, http.StatusOK, rec.Code)
+	require.Equal(t, "Connexion réussie", helpers.ParseResult(t, rec).Msg)
+}
+
 func TestExecute_Success(t *testing.T) {
 	cases := []struct {
 		name        string

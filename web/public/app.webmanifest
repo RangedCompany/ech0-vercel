@@ -1,10 +1,10 @@
 {
   "name": "Ech0",
   "short_name": "Ech0",
-  "lang": "zh-CN",
+  "lang": "fr-FR",
   "dir": "ltr",
   "categories": ["social", "news"],
-  "description": "Ech0 is a new-generation open-source self-hosted platform designed for individual users. It is ultra-lightweight and low-cost, helping you easily publish and share ideas, writings, and links. With a clean, intuitive interface and powerful command-line tools, content management becomes simple and flexible. Your data is fully owned and controlled by you.",
+  "description": "Ech0 est un microblog libre, léger et auto-hébergé. Publiez vos idées, vos notes et vos liens depuis une interface simple ou la ligne de commande. Vous gardez le contrôle de vos données.",
   "start_url": "/",
   "id": "/",
   "scope": "/",

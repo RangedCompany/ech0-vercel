@@ -12,8 +12,7 @@
         <img :src="logo" alt="" loading="lazy" class="home-header__logo" />
       </button>
       <h1 class="home-header__title">
-        <span>{{ typedTitle }}</span>
-        <span v-if="isTypingTitle" class="home-header__cursor" aria-hidden="true"></span>
+        {{ fullTitle }}
       </h1>
     </div>
 
@@ -85,7 +84,7 @@ import Signoff from '@/components/icons/signoff.vue'
 import Zen from '@/components/icons/zen.vue'
 import TheLocaleToggle from '@/components/common/TheLocaleToggle.vue'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSettingStore, useUserStore, useThemeStore } from '@/stores'
 import { resolveAvatarUrl, isStaticMode, staticBase } from '@/service/request/shared'
@@ -113,50 +112,6 @@ const logo = computed(() => {
   return resolveAvatarUrl(SystemSetting.value?.server_logo)
 })
 const fullTitle = computed(() => String(SystemSetting.value?.server_name ?? ''))
-const typedTitle = ref('')
-const isTypingTitle = ref(false)
-const CURSOR_INTRO_DELAY_MS = 2000
-const TITLE_TYPING_INTERVAL_MS = 85
-let introDelayTimer: ReturnType<typeof setTimeout> | null = null
-let typingTimer: ReturnType<typeof setTimeout> | null = null
-
-const clearTypingTimers = () => {
-  if (introDelayTimer) {
-    clearTimeout(introDelayTimer)
-    introDelayTimer = null
-  }
-  if (typingTimer) {
-    clearTimeout(typingTimer)
-    typingTimer = null
-  }
-}
-
-const runTypingEffect = () => {
-  clearTypingTimers()
-  typedTitle.value = ''
-  isTypingTitle.value = true
-
-  const nextTitle = fullTitle.value
-  if (!nextTitle) {
-    isTypingTitle.value = false
-    return
-  }
-
-  let index = 0
-  const typeNext = () => {
-    index += 1
-    typedTitle.value = nextTitle.slice(0, index)
-
-    if (index < nextTitle.length) {
-      typingTimer = setTimeout(typeNext, TITLE_TYPING_INTERVAL_MS)
-      return
-    }
-
-    isTypingTitle.value = false
-  }
-
-  introDelayTimer = setTimeout(typeNext, CURSOR_INTRO_DELAY_MS)
-}
 
 const nextThemeMode = computed(() => {
   if (themeStore.mode === 'light') return 'sunny'
@@ -210,25 +165,12 @@ const handleLogout = () => {
     },
   })
 }
-
-watch(fullTitle, (nextTitle, prevTitle) => {
-  if (nextTitle !== prevTitle) {
-    runTypingEffect()
-  }
-})
-
-onMounted(() => {
-  runTypingEffect()
-})
-
-onBeforeUnmount(() => {
-  clearTypingTimers()
-})
 </script>
 
 <style scoped>
 .home-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
@@ -237,6 +179,7 @@ onBeforeUnmount(() => {
 
 .home-header__brand {
   display: flex;
+  flex: 1 1 7rem;
   align-items: center;
   gap: 0.625rem;
   min-width: 0;
@@ -272,29 +215,6 @@ onBeforeUnmount(() => {
   text-overflow: ellipsis;
 }
 
-.home-header__cursor {
-  display: inline-block;
-  width: 0.42em;
-  height: 0.9em;
-  margin-left: 0.12em;
-  border-radius: 0.08em;
-  background: currentcolor;
-  vertical-align: -0.08em;
-  animation: home-header-cursor-blink 0.95s steps(1, end) infinite;
-}
-
-@keyframes home-header-cursor-blink {
-  0%,
-  45% {
-    opacity: 1;
-  }
-
-  46%,
-  100% {
-    opacity: 0;
-  }
-}
-
 @media (width >= 640px) {
   .home-header__title {
     font-size: 1.25rem;
@@ -304,13 +224,15 @@ onBeforeUnmount(() => {
 .home-header__actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
+  margin-inline-start: auto;
+  min-width: 0;
 }
 
 .home-header__links {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .home-header__link-icon {
@@ -328,5 +250,17 @@ onBeforeUnmount(() => {
 .home-header__link-icon:hover {
   color: var(--color-text-secondary);
   background: var(--color-border-subtle);
+}
+
+@media (pointer: coarse) {
+  .home-header__link-icon {
+    min-width: 2.125rem;
+    min-height: 2.125rem;
+  }
+
+  .home-header__links :deep(.locale-toggle__trigger) {
+    min-width: 2.125rem;
+    min-height: 2.125rem;
+  }
 }
 </style>

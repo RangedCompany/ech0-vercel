@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 lin-snow
 
+import { i18n } from '@/locales'
 import { computed } from 'vue'
 import { FileQueue, globalFileQueue } from '../queue/file-queue'
 import type { FileUploadInput, QueueTask } from '../types'
@@ -38,7 +39,7 @@ export function useFileQueue(scopeKey = 'global') {
         }
         if (['failed', 'cancelled'].includes(task.status)) {
           clearInterval(timer)
-          reject(new Error(task.error || '上传任务失败'))
+          reject(new Error(task.error || i18n.global.t('uploader.uploadError')))
         }
       }, 60)
     })

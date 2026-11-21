@@ -62,6 +62,26 @@ func get(r *gin.Engine, target string) *httptest.ResponseRecorder {
 	return rec
 }
 
+func TestTemplates_DefaultLocaleAndFrenchMetadata(t *testing.T) {
+	for _, setting := range []string{"", "unsupported", "fr-CA"} {
+		t.Run(setting, func(t *testing.T) {
+			r := newTemplatesRouterWith(stubSettings{setting: settingModel.SystemSetting{
+				DefaultLocale: setting,
+			}}, stubEchoes{})
+			rec := get(r, "/")
+			if got := rec.Header().Get("Content-Language"); got != "fr-FR" {
+				t.Fatalf("expected fr-FR, got %q", got)
+			}
+			body := rec.Body.String()
+			for _, want := range []string{`<html lang="fr-FR"`, `<title>Accueil | Ech0</title>`, "Le fil Ech0"} {
+				if !strings.Contains(body, want) {
+					t.Fatalf("expected body to contain %q", want)
+				}
+			}
+		})
+	}
+}
+
 func TestTemplates_HomeRendersAbsoluteSocialMeta(t *testing.T) {
 	r := newTemplatesRouterWith(stubSettings{
 		setting: settingModel.SystemSetting{
@@ -78,6 +98,7 @@ func TestTemplates_HomeRendersAbsoluteSocialMeta(t *testing.T) {
 		t.Fatalf("expected %d, got %d", http.StatusOK, rec.Code)
 	}
 	for _, want := range []string{
+		`<html lang="en-US"`,
 		`<title>Home | My Blog</title>`,
 		`<link rel="canonical" href="http://blog.example.com/" />`,
 		`<meta property="og:url" content="http://blog.example.com/" />`,
@@ -215,7 +236,7 @@ func TestTemplates_PrivacyPageRequiresConfiguredPolicy(t *testing.T) {
 		t.Fatalf("expected %d for a configured policy, got %d", http.StatusOK, rec.Code)
 	}
 	for _, want := range []string{
-		`<title>Privacy Policy | My Blog</title>`,
+		`<title>Politique de confidentialité | My Blog</title>`,
 		`<meta name="description" content="Privacy We collect nothing." />`,
 		`<link rel="canonical" href="http://blog.example.com/privacy" />`,
 		`<meta name="robots" content="index,follow,max-image-preview:large" />`,
@@ -254,10 +275,13 @@ func TestSPAShell_FallsBackWithoutMarkers(t *testing.T) {
 		`<!doctype html><html lang="zh-CN"><head></head><body><div id="app"></div></body></html>`,
 	))
 
-	body := string(shell.render(`<title>fallback</title>`, "", "zh-CN"))
+	body := string(shell.render(`<title>fallback</title>`, "", "fr-FR"))
 
 	if !strings.Contains(body, `<title>fallback</title></head>`) {
 		t.Fatalf("head fallback must inject before </head>, got:\n%s", body)
+	}
+	if !strings.Contains(body, `<html lang="fr-FR">`) {
+		t.Fatalf("legacy shell must use the requested language, got:\n%s", body)
 	}
 }
 
@@ -285,7 +309,7 @@ func TestTemplates_PrivateRouteGetsNoIndexHeader(t *testing.T) {
 	if got := rec.Header().Get("X-Robots-Tag"); got != robotsNoIndex {
 		t.Fatalf("expected X-Robots-Tag %q, got %q", robotsNoIndex, got)
 	}
-	if !strings.Contains(rec.Body.String(), `<title>Panel | Ech0</title>`) {
+	if !strings.Contains(rec.Body.String(), `<title>Administration | Ech0</title>`) {
 		t.Fatalf("expected panel title, body:\n%s", rec.Body.String())
 	}
 }

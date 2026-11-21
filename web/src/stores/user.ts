@@ -9,7 +9,7 @@ import { theToast } from '@/utils/toast'
 import router from '@/router'
 import { useAuthStore } from './auth'
 import { useEchoStore } from './echo'
-import { i18n, setI18nLocale } from '@/locales'
+import { applyI18nLocale, i18n } from '@/locales'
 import {
   HOME_TIMELINE_ANCHOR_KEY,
   HOME_TIMELINE_CURSORS_KEY,
@@ -71,7 +71,10 @@ export const useUserStore = defineStore('userStore', () => {
   }
 
   async function signup(userInfo: App.Api.Auth.SignupParams) {
-    return await fetchSignup(userInfo).then((res) => {
+    return await fetchSignup({
+      ...userInfo,
+      locale: userInfo.locale || i18n.global.locale.value,
+    }).then((res) => {
       if (res.code === 1) {
         theToast.success(String(i18n.global.t('auth.signupSuccess')))
         return true
@@ -84,6 +87,7 @@ export const useUserStore = defineStore('userStore', () => {
     await authStore.logout()
 
     user.value = null
+    await applyI18nLocale()
 
     // The timeline is about to reload as anonymous; a restored anchor/count
     // belongs to the previous session and must not seed that feed.
@@ -112,13 +116,11 @@ export const useUserStore = defineStore('userStore', () => {
     const res = await fetchGetCurrentUser()
     if (res.code === 1) {
       user.value = res.data
-      if (res.data.locale) {
-        await setI18nLocale(res.data.locale)
-      }
     } else {
       user.value = null
       authStore.clearToken()
     }
+    await applyI18nLocale(user.value)
   }
 
   const init = async () => {

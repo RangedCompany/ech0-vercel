@@ -1,15 +1,15 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <!-- Copyright (C) 2025-2026 lin-snow -->
 <template>
-  <div class="flex justify-center items-center h-screen">
-    <div class="h-1/2 w-[min(86vw,12rem)] sm:w-[min(82vw,18rem)] md:w-[15rem]">
+  <div class="flex justify-center items-center min-h-[100dvh] px-4 py-8">
+    <div class="w-full max-w-xs min-w-0">
       <h1
         class="text-6xl italic font-bold text-center text-[var(--color-text-muted)] mb-4 font-serif"
       >
         Ech0
       </h1>
       <div v-if="AuthMode === 'login'">
-        <div class="flex items-center justify-between gap-3 mb-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
           <h2 class="text-lg font-bold text-[var(--color-text-muted)] leading-tight">
             {{ t('authPage.login') }}
           </h2>
@@ -35,14 +35,14 @@
           :placeholder="t('authPage.passwordPlaceholder')"
           class="mb-4"
         />
-        <div class="flex justify-between items-center">
+        <div class="flex flex-wrap justify-between items-center gap-2">
           <BaseButton
             @click="router.push({ name: 'home' })"
             :tooltip="t('authPage.backHome')"
             :icon="Home"
             class="rounded-md w-9 h-9 flex-shrink-0"
           />
-          <div class="w-full flex items-center justify-end gap-1">
+          <div class="flex-1 flex items-center justify-end gap-1">
             <BaseButton
               :icon="Passkey"
               v-if="passkeySupported"
@@ -68,13 +68,13 @@
               :tooltip="t('authPage.oauth2LoginTitle')"
             />
           </div>
-          <BaseButton @click="handleLogin" class="min-w-fit px-3 h-9 rounded-md ml-1 flex-shrink-0">
+          <BaseButton @click="handleLogin" class="min-w-fit px-3 h-9 rounded-md flex-shrink-0">
             <span class="text-[var(--color-text-secondary)]">{{ t('authPage.login') }}</span>
           </BaseButton>
         </div>
       </div>
       <div v-else-if="AuthMode === 'register'">
-        <div class="flex items-center justify-between gap-3 mb-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
           <h2 class="text-lg font-bold text-[var(--color-text-muted)] leading-tight">
             {{ t('authPage.register') }}
           </h2>

@@ -28,19 +28,21 @@ var localeFS embed.FS
 
 var (
 	supportedLocales = []language.Tag{
-		language.MustParse("zh-CN"),
-		language.MustParse("en-US"),
-		language.MustParse("de-DE"),
-		language.MustParse("ja-JP"),
+		language.MustParse(string(commonModel.DefaultLocale)),
+		language.MustParse(string(commonModel.LocaleZhCN)),
+		language.MustParse(string(commonModel.LocaleEnUS)),
+		language.MustParse(string(commonModel.LocaleDeDE)),
+		language.MustParse(string(commonModel.LocaleJaJP)),
 	}
 	matcher = language.NewMatcher(supportedLocales)
 	bundle  = newBundle()
 )
 
 func newBundle() *goi18n.Bundle {
-	b := goi18n.NewBundle(language.MustParse("zh-CN"))
+	b := goi18n.NewBundle(language.MustParse(string(commonModel.FallbackLocale)))
 	b.RegisterUnmarshalFunc("json", unmarshalJSON)
-	for _, path := range []string{"locales/zh-CN.json", "locales/en-US.json", "locales/de-DE.json", "locales/ja-JP.json"} {
+	for _, tag := range supportedLocales {
+		path := "locales/" + tag.String() + ".json"
 		_, err := b.LoadMessageFileFS(localeFS, path)
 		if err != nil {
 			panic(fmt.Sprintf("load i18n message file failed: %s: %v", path, err))
@@ -59,6 +61,13 @@ func sanitizeAcceptLanguage(v string) string {
 }
 
 func ResolveLocale(raw ...string) string {
+	if locale := matchLocale(raw...); locale != "" {
+		return locale
+	}
+	return string(commonModel.FallbackLocale)
+}
+
+func matchLocale(raw ...string) string {
 	parts := make([]string, 0, len(raw))
 	for _, v := range raw {
 		v = sanitizeAcceptLanguage(strings.TrimSpace(v))
@@ -67,19 +76,16 @@ func ResolveLocale(raw ...string) string {
 		}
 	}
 	if len(parts) == 0 {
-		return string(commonModel.FallbackLocale)
+		return ""
 	}
 	tag, _, _ := language.ParseAcceptLanguage(strings.Join(parts, ","))
-	best, _, confidence := matcher.Match(tag...)
+	_, index, confidence := matcher.Match(tag...)
 	if confidence == language.No {
-		return string(commonModel.FallbackLocale)
+		return ""
 	}
-	base, _ := best.Base()
-	region, _ := best.Region()
-	if region.IsCountry() {
-		return fmt.Sprintf("%s-%s", strings.ToLower(base.String()), strings.ToUpper(region.String()))
-	}
-	return best.String()
+	// Matcher can retain the requested region (e.g. fr-CA). The index
+	// identifies the exact catalogue actually used to answer the request.
+	return supportedLocales[index].String()
 }
 
 func NewLocalizer(locale, acceptLanguage string) *goi18n.Localizer {
@@ -117,15 +123,14 @@ func LocalizerFromGin(ctx *gin.Context) *goi18n.Localizer {
 }
 
 func LocaleFromGin(ctx *gin.Context) string {
-	if ctx == nil {
-		return "zh-CN"
-	}
-	if v, ok := ctx.Get(ContextLocaleKey); ok {
-		if locale, ok := v.(string); ok && locale != "" {
-			return locale
+	if ctx != nil {
+		if v, ok := ctx.Get(ContextLocaleKey); ok {
+			if locale, ok := v.(string); ok && locale != "" {
+				return locale
+			}
 		}
 	}
-	return "zh-CN"
+	return string(commonModel.DefaultLocale)
 }
 
 func hasExplicitLocale(ctx *gin.Context) bool {
@@ -191,10 +196,7 @@ func userPreferredLocale(userID string) string {
 	if err := db.Select("locale").Where("id = ?", userID).First(&user).Error; err != nil {
 		return ""
 	}
-	if strings.TrimSpace(user.Locale) == "" {
-		return ""
-	}
-	return ResolveLocale(user.Locale)
+	return matchLocale(user.Locale)
 }
 
 func setLocaleContext(ctx *gin.Context, locale, acceptLanguage string) {
@@ -212,9 +214,11 @@ func Middleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		explicit := explicitLocaleFromRequest(ctx)
 		acceptLanguage := strings.TrimSpace(ctx.GetHeader("Accept-Language"))
-		locale := systemDefaultLocale()
-		if explicit != "" {
-			locale = ResolveLocale(explicit, acceptLanguage)
+		var locale string
+		if explicit == "" {
+			locale = systemDefaultLocale()
+		} else if locale = matchLocale(explicit); locale == "" {
+			locale = ResolveLocale(acceptLanguage)
 		}
 		setLocaleContext(ctx, locale, acceptLanguage)
 		ctx.Next()
@@ -235,7 +239,10 @@ func ApplyUserLocaleFromUserID(ctx *gin.Context, userID string) {
 
 func HeaderLocale(req *http.Request) string {
 	if req == nil {
-		return "zh-CN"
+		return string(commonModel.DefaultLocale)
 	}
-	return ResolveLocale(req.Header.Get("X-Locale"), req.Header.Get("Accept-Language"))
+	if locale := matchLocale(req.Header.Get("X-Locale")); locale != "" {
+		return locale
+	}
+	return ResolveLocale(req.Header.Get("Accept-Language"))
 }

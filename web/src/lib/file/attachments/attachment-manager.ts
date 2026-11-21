@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 lin-snow
 
+import { i18n } from '@/locales'
 import type { FileAttachment, FileValidationRule } from '../types'
 
 function keyOf(file: FileAttachment): string {
@@ -46,11 +47,11 @@ export class AttachmentManager {
 
   validate(rule: FileValidationRule = {}) {
     if (rule.maxCount !== undefined && this.files.length > rule.maxCount) {
-      return { valid: false, reason: `附件数量超过限制（${rule.maxCount}）` }
+      return { valid: false, reason: i18n.global.t('uploader.dropHint', { max: rule.maxCount }) }
     }
     if (rule.requireId) {
       const missing = this.files.find((item) => !item.id)
-      if (missing) return { valid: false, reason: '存在未绑定 file_id 的附件' }
+      if (missing) return { valid: false, reason: i18n.global.t('editor.attachmentMissingFileId') }
     }
     return { valid: true as const }
   }

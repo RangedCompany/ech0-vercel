@@ -18,6 +18,11 @@ func localeIsZH(locale string) bool {
 	return strings.HasPrefix(strings.ToLower(locale), "zh")
 }
 
+func localeIsFR(locale string) bool {
+	lang, _, _ := strings.Cut(strings.ToLower(locale), "-")
+	return lang == "fr"
+}
+
 func runStringsFor(locale string) agent.RunStrings {
 	if localeIsZH(locale) {
 		return agent.RunStrings{
@@ -30,7 +35,7 @@ func runStringsFor(locale string) agent.RunStrings {
 			OutputTruncated: "（输出达到模型的长度上限，回答未完成）",
 		}
 	}
-	return agent.RunStrings{
+	result := agent.RunStrings{
 		DedupNote:       "(Already searched; see the results above.)",
 		UnknownTool:     "Unknown tool: ",
 		ToolError:       "Tool execution failed: ",
@@ -39,6 +44,10 @@ func runStringsFor(locale string) agent.RunStrings {
 		TruncateNote:    "(Result too long; the rest was cut.)",
 		OutputTruncated: "(The model hit its output length limit; this answer is incomplete.)",
 	}
+	if localeIsFR(locale) {
+		result.OutputTruncated = "(Le modèle a atteint sa limite de longueur ; cette réponse est incomplète.)"
+	}
+	return result
 }
 
 const chatSystemPrompt = `你是用户的私人助手。你可以检索 ta 过往发布的 Echo（微博客/碎碎念）来作答——回顾总结、查找某条、延伸思考、找灵感都行。
@@ -158,6 +167,9 @@ func recentSourcesNoteFor(locale string) string {
 func summarySystemPromptFor(locale string) string {
 	if localeIsZH(locale) {
 		return summarySystemPromptZH
+	}
+	if localeIsFR(locale) {
+		return summarySystemPromptEN + "\nRédigez toujours le résumé en français."
 	}
 	return summarySystemPromptEN
 }
@@ -414,6 +426,37 @@ func writeStringsFor(locale string) writeStrings {
 			NoChange:        "没有需要修改的字段：content、tags、private 至少要给一个，且要和现在的值不同",
 			BadEchoID:       "id 不是一个有效的 Echo ID。请先用 search_echos 检索，然后照抄结果里那条的 id= 后面的完整 UUID（形如 019ce0ea-82dd-774f-ae2d-5445512d42ad）——【1】【2】只是结果编号，不是 ID。",
 			UnsupportedArg:  "本工具不支持这个参数。create_echo / update_echo 只能写 content、tags、private：图片、附件、扩展卡片（音乐/视频/网站/位置/GitHub 项目）都无法通过对话创建或修改，需要用户自己在界面里操作——如实告诉 ta，不要重试。",
+		}
+	}
+	if localeIsFR(locale) {
+		return writeStrings{
+			CreateHeader:    "Confirmer la publication",
+			CreateText:      "Publier cet Echo ?",
+			CreateYes:       "Publier",
+			UpdateHeader:    "Confirmer la modification",
+			UpdateText:      "Appliquer ces modifications à cet Echo ?",
+			UpdateYes:       "Mettre à jour",
+			DeleteHeader:    "Confirmer la suppression",
+			DeleteText:      "Supprimer cet Echo ?",
+			DeleteYes:       "Supprimer",
+			DeleteNote:      "Cette action est irréversible.",
+			Cancel:          "Annuler",
+			FieldID:         "Identifiant",
+			FieldContent:    "Contenu",
+			FieldNewContent: "Nouveau contenu",
+			FieldTags:       "Étiquettes",
+			FieldVisibility: "Visibilité",
+			FieldPostedAt:   "Publié le",
+			Private:         "privé",
+			Public:          "public",
+			NoTags:          "aucune",
+			Arrow:           " → ",
+			Created:         "Echo publié. Identifiant : %s",
+			Updated:         "Echo mis à jour. Identifiant : %s",
+			Deleted:         "Echo supprimé. Identifiant : %s",
+			NoChange:        "Aucune modification : renseignez au moins un champ différent de la valeur actuelle parmi content, tags ou private.",
+			BadEchoID:       "Identifiant d’Echo invalide. Recherchez-le avec search_echos, puis copiez l’UUID complet qui suit id=. Les numéros 【1】【2】 identifient les résultats, pas les Echos.",
+			UnsupportedArg:  "Ce champ n’est pas accepté. create_echo et update_echo ne modifient que content, tags et private. Pour les images, les pièces jointes et les cartes d’extension, invitez l’utilisateur à passer par l’interface sans retenter l’opération.",
 		}
 	}
 	return writeStrings{

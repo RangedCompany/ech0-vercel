@@ -73,12 +73,12 @@
                 }}</span>
               </td>
               <td class="px-1 py-2 text-[var(--color-text-secondary)] whitespace-nowrap">
-                {{ new Date(tokenItem.created_at * 1000).toLocaleString() }}
+                {{ formatTokenDate(tokenItem.created_at) }}
               </td>
               <td class="px-1 py-2 text-[var(--color-text-secondary)] whitespace-nowrap">
                 {{
                   tokenItem.expiry
-                    ? new Date(tokenItem.expiry * 1000).toLocaleString()
+                    ? formatTokenDate(tokenItem.expiry)
                     : t('accessTokenSetting.neverExpire')
                 }}
               </td>
@@ -355,7 +355,8 @@ import { AccessTokenExpiration } from '@/enums/enums'
 import { ACCESS_SCOPE_GROUPS, ACCESS_SCOPE_LABEL_KEYS } from '@/constants/accessScopes'
 
 const { openConfirm } = useBaseDialog()
-const { t } = useI18n()
+const { t, locale } = useI18n()
+const formatTokenDate = (seconds: number) => new Date(seconds * 1000).toLocaleString(locale.value)
 
 const accessTokenEdit = ref<boolean>(false)
 const useSetting = useSettingStore()
@@ -414,11 +415,11 @@ const selectedTokenScopes = computed(() => parseTokenScopes(selectedToken.value?
 
 const selectedTokenExpiryText = computed(() =>
   selectedToken.value?.expiry
-    ? new Date(selectedToken.value.expiry * 1000).toLocaleString()
+    ? formatTokenDate(selectedToken.value.expiry)
     : t('accessTokenSetting.neverExpire'),
 )
 const selectedTokenCreatedText = computed(() =>
-  selectedToken.value ? new Date(selectedToken.value.created_at * 1000).toLocaleString() : '',
+  selectedToken.value ? formatTokenDate(selectedToken.value.created_at) : '',
 )
 
 const selectedTokenScopeGroups = computed(() => {

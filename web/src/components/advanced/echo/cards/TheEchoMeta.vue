@@ -56,7 +56,7 @@ const tags = computed(() => props.echo.tags ?? [])
 
 .echo-meta-line {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem;
   min-width: 0;
@@ -87,15 +87,6 @@ const tags = computed(() => props.echo.tags ?? [])
   gap: 0.3rem;
 }
 
-@media (width <= 360px) {
-  /* The reaction pill can grow to three emoji plus a capped total; drop the
-     least useful fact so the row and its actions still fit on small phones. */
-  .echo-meta-word,
-  .echo-meta-dot--word {
-    display: none;
-  }
-}
-
 .echo-meta-chip {
   display: inline-flex;
   align-items: center;
@@ -105,6 +96,8 @@ const tags = computed(() => props.echo.tags ?? [])
   color: var(--color-text-muted);
   font-size: 0.7rem;
   line-height: 1.3;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .echo-meta-actions {

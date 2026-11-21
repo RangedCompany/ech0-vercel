@@ -305,7 +305,7 @@ import { useSettingStore } from '@/stores'
 import { storeToRefs } from 'pinia'
 import { resolveAvatarUrl } from '@/service/request/shared'
 import { useFileQueue } from '@/lib/file'
-import { LOCALE_ENDONYMS, LOCALE_OPTIONS, type AppLocale } from '@/locales'
+import { DEFAULT_LOCALE, LOCALE_ENDONYMS, LOCALE_OPTIONS, normalizeLocale } from '@/locales'
 
 const settingStore = useSettingStore()
 const { t } = useI18n()
@@ -333,8 +333,7 @@ const agentDiscoveryEnabled = computed({
 })
 const localeOptions = LOCALE_OPTIONS
 const defaultLocaleLabel = computed(
-  () =>
-    LOCALE_ENDONYMS[SystemSetting.value?.default_locale as AppLocale] || LOCALE_ENDONYMS['zh-CN'],
+  () => LOCALE_ENDONYMS[normalizeLocale(SystemSetting.value?.default_locale) ?? DEFAULT_LOCALE],
 )
 const { enqueueUpload, waitForTask, clearFinishedUploads } = useFileQueue()
 

@@ -49,3 +49,15 @@ func TestChatSystemPrompt_GeneralFraming(t *testing.T) {
 		t.Fatalf("en system prompt should be framed as a personal assistant: %q", en)
 	}
 }
+
+func TestFrenchCopilotUserFacingStrings(t *testing.T) {
+	if got := writeStringsFor("fr-FR"); got.CreateYes != "Publier" || got.DeleteYes != "Supprimer" || got.Cancel != "Annuler" {
+		t.Fatalf("unexpected French confirmation labels: %+v", got)
+	}
+	if got := runStringsFor("fr-FR").OutputTruncated; !strings.Contains(got, "cette réponse est incomplète") {
+		t.Fatalf("output truncation notice was not localized: %q", got)
+	}
+	if got := summarySystemPromptFor("fr-FR"); !strings.Contains(got, "en français") {
+		t.Fatal("French summaries must explicitly use French")
+	}
+}

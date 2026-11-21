@@ -22,5 +22,21 @@
   { "id": "comment_manager.subtitle", "translation": "コメントの有効化、審査ポリシー、キャプチャを一括管理します。" },
   { "id": "dashboard.logs.success", "translation": "システムログを取得しました" },
   { "id": "dashboard.logs.tail_invalid", "translation": "tail は 0 より大きい数値である必要があります" },
-  { "id": "dashboard.check_update_failed", "translation": "アップデートの確認に失敗しました" }
+  { "id": "dashboard.check_update_failed", "translation": "アップデートの確認に失敗しました" },
+  { "id": "auth.credentials_required", "translation": "ユーザー名とパスワードを入力してください" },
+  { "id": "auth.password_incorrect", "translation": "パスワードが正しくありません" },
+  { "id": "auth.password_too_long", "translation": "パスワードが長すぎます（最大 72 バイト）" },
+  { "id": "user.not_found", "translation": "ユーザーが見つかりません" },
+  { "id": "user.name_taken", "translation": "このユーザー名は既に使用されています" },
+  { "id": "user.email_required", "translation": "メールアドレスを入力してください" },
+  { "id": "user.email_invalid", "translation": "メールアドレスが無効です" },
+  { "id": "user.limit_reached", "translation": "ユーザー数が上限に達しました" },
+  { "id": "user.registration_disabled", "translation": "このインスタンスでは新規登録できません" },
+  { "id": "init.already_done", "translation": "このインスタンスは既に初期化されています" },
+  { "id": "init.owner_exists", "translation": "オーナーアカウントは既に存在します" },
+  { "id": "init.required", "translation": "先にオーナーアカウントを設定してください" },
+  { "id": "auth.login_success", "translation": "ログインしました" },
+  { "id": "user.register_success", "translation": "アカウントを作成しました" },
+  { "id": "user.update_success", "translation": "ユーザー情報を更新しました" },
+  { "id": "init.success", "translation": "オーナーアカウントを設定しました" }
 ]

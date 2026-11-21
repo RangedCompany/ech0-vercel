@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <!-- Copyright (C) 2025-2026 lin-snow -->
 <template>
-  <WidgetShell title="Comment" :fluid="fluid">
+  <WidgetShell :title="t('panelPageNav.comment')" :fluid="fluid">
     <template #icon>
       <span class="comment-doodle" aria-hidden="true">
         <span class="doodle-smile">

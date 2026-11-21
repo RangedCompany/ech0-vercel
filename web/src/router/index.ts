@@ -23,8 +23,8 @@ const router = createRouter({
       name: 'home',
       component: () => import('../views/home/HomeView.vue'),
       meta: {
-        title: 'Home',
-        description: 'Ech0 home timeline for publishing and browsing thoughts, notes, and links.',
+        titleKey: 'homeSidebar.home',
+        descriptionKey: 'seo.homeDescription',
         optionalAuth: true,
       },
     },
@@ -39,8 +39,8 @@ const router = createRouter({
       component: () => import('../views/panel/PanelView.vue'),
       redirect: '/panel/dashboard',
       meta: {
-        title: 'Panel',
-        description: 'Ech0 management panel.',
+        titleKey: 'seo.panel',
+        descriptionKey: 'seo.panelDescription',
         requiresAuth: true,
         noindex: true,
       },
@@ -102,8 +102,8 @@ const router = createRouter({
       name: 'auth',
       component: () => import('../views/auth/AuthView.vue'),
       meta: {
-        title: 'Sign In',
-        description: 'Sign in to your Ech0 workspace.',
+        titleKey: 'authPage.login',
+        descriptionKey: 'seo.authDescription',
         noindex: true,
       },
     },
@@ -112,8 +112,8 @@ const router = createRouter({
       name: 'device',
       component: () => import('../views/device/DeviceView.vue'),
       meta: {
-        title: 'Device Authorization',
-        description: 'Approve a CLI sign-in request for this Ech0 instance.',
+        titleKey: 'devicePage.codeLabel',
+        descriptionKey: 'seo.deviceDescription',
         requiresAuth: true,
         noindex: true,
       },
@@ -123,8 +123,8 @@ const router = createRouter({
       name: 'oauth-authorize',
       component: () => import('../views/oauth/AuthorizeView.vue'),
       meta: {
-        title: 'MCP Authorization',
-        description: 'Approve an MCP client request for this Ech0 instance.',
+        titleKey: 'oauthConsent.title',
+        descriptionKey: 'seo.oauthDescription',
         requiresAuth: true,
         noindex: true,
       },
@@ -134,8 +134,8 @@ const router = createRouter({
       name: 'widget',
       component: () => import('../views/widget/WidgetView.vue'),
       meta: {
-        title: 'Widget',
-        description: 'Ech0 embeddable widget.',
+        titleKey: 'seo.widget',
+        descriptionKey: 'seo.widgetDescription',
         noindex: true,
       },
     },
@@ -144,8 +144,8 @@ const router = createRouter({
       name: 'init',
       component: () => import('../views/init/InitView.vue'),
       meta: {
-        title: 'Initialize',
-        description: 'Initialize your Ech0 instance.',
+        titleKey: 'init.initialize',
+        descriptionKey: 'seo.initDescription',
         noindex: true,
       },
     },
@@ -154,8 +154,8 @@ const router = createRouter({
       name: 'hub',
       component: () => import('../views/hub/HubView.vue'),
       meta: {
-        title: 'Hub',
-        description: 'Discover and explore curated content in Ech0 hub.',
+        titleKey: 'homeSidebar.plaza',
+        descriptionKey: 'seo.hubDescription',
       },
     },
     {
@@ -163,8 +163,8 @@ const router = createRouter({
       name: 'chat',
       component: () => import('../views/chat/ChatView.vue'),
       meta: {
-        title: 'Chat',
-        description: 'Reflect on and summarize your past echos with AI.',
+        titleKey: 'chatLauncher.title',
+        descriptionKey: 'seo.chatDescription',
         requiresAuth: true,
         noindex: true,
       },
@@ -174,8 +174,8 @@ const router = createRouter({
       name: 'zen',
       component: () => import('../views/zen/ZenView.vue'),
       meta: {
-        title: 'Zen',
-        description: 'Browse all echos in an immersive masonry view.',
+        titleKey: 'seo.zen',
+        descriptionKey: 'seo.zenDescription',
         optionalAuth: true,
         noindex: true,
       },
@@ -192,8 +192,8 @@ const router = createRouter({
         return true
       },
       meta: {
-        title: 'Echo',
-        description: 'Read a shared Ech0 post.',
+        titleKey: 'seo.echo',
+        descriptionKey: 'seo.echoDescription',
       },
     },
     {
@@ -201,8 +201,8 @@ const router = createRouter({
       name: 'about',
       component: () => import('../views/about/AboutView.vue'),
       meta: {
-        title: 'About',
-        description: 'Copyright, license and author information for this Ech0 instance.',
+        titleKey: 'seo.about',
+        descriptionKey: 'seo.aboutDescription',
       },
     },
     {
@@ -210,8 +210,8 @@ const router = createRouter({
       name: 'privacy',
       component: () => import('../views/privacy/PrivacyView.vue'),
       meta: {
-        title: 'Privacy Policy',
-        description: 'Privacy policy for this Ech0 instance.',
+        titleKey: 'privacy.footerLink',
+        descriptionKey: 'seo.privacyDescription',
       },
     },
     {
@@ -219,8 +219,8 @@ const router = createRouter({
       name: 'not-found',
       component: () => import('../views/404/NotFoundView.vue'),
       meta: {
-        title: '404',
-        description: 'Requested page was not found.',
+        titleKey: 'notFound.pageNotFound',
+        descriptionKey: 'seo.notFoundDescription',
         noindex: true,
       },
     },

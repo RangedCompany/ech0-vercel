@@ -1,29 +1,27 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <!-- Copyright (C) 2025-2026 lin-snow -->
 <template>
-  <article class="echo-detail w-full max-w-sm mx-auto">
+  <article class="echo-detail w-full mx-auto">
     <header class="echo-detail-head">
       <img
         :src="logo"
-        alt="logo"
+        alt=""
         loading="lazy"
         decoding="async"
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-full ring-1 ring-[var(--color-border-subtle)] shadow-[var(--shadow-sm)] object-cover"
+        class="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-full ring-1 ring-[var(--color-border-subtle)] shadow-[var(--shadow-sm)] object-cover"
       />
-      <div class="flex flex-col">
+      <div class="echo-detail-author flex flex-col">
         <div class="flex items-center gap-1">
-          <h2
-            class="text-[var(--color-text-primary)] font-bold overflow-hidden whitespace-nowrap text-center"
-          >
+          <h2 class="text-[var(--color-text-primary)] font-bold">
             {{ SystemSetting.server_name }}
           </h2>
-          <Verified class="text-sky-500 w-5 h-5" />
+          <Verified class="text-sky-500 w-5 h-5 shrink-0" />
         </div>
         <span class="echo-username text-[var(--color-text-secondary)]">@ {{ echo.username }}</span>
       </div>
       <button
         type="button"
-        class="echo-detail-back ml-auto cursor-pointer rounded-full px-4 py-1 text-sm font-medium ring-1 ring-inset ring-[var(--color-border-subtle)] text-[var(--color-text-primary)] bg-transparent transition-colors duration-200 hover:bg-[var(--color-bg-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
+        class="echo-detail-back ml-auto shrink-0 cursor-pointer rounded-full px-4 py-1 text-sm font-medium ring-1 ring-inset ring-[var(--color-border-subtle)] text-[var(--color-text-primary)] bg-transparent transition-colors duration-200 hover:bg-[var(--color-bg-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
         :aria-label="t('commonNav.back')"
         @click="goBack"
       >
@@ -33,7 +31,7 @@
 
     <section class="echo-detail-body">
       <template v-if="isContentLeadingEcho(props.echo)">
-        <div class="mb-3">
+        <div class="echo-detail-prose mb-3">
           <TheMdPreview :content="props.echo.content" />
         </div>
 
@@ -43,7 +41,7 @@
       <template v-else>
         <TheMediaPlayer :echo="props.echo" :layout="props.echo.layout" priority />
 
-        <div class="mt-3">
+        <div class="echo-detail-prose mt-3">
           <TheMdPreview :content="props.echo.content" />
         </div>
       </template>
@@ -125,6 +123,16 @@ const goBack = () => {
 
 .echo-detail-body {
   padding: 2rem 0;
+}
+
+.echo-detail-author {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.echo-detail-prose {
+  max-width: 72ch;
+  font-family: var(--font-family-sans);
 }
 
 .echo-detail-body :deep(.image-gallery-container > div) {

@@ -12,6 +12,7 @@ import {
 } from '@/service/api'
 import { getApiUrl } from '@/service/request/shared'
 import { useAuthStore } from '@/stores/auth'
+import { i18n } from '@/locales'
 import { httpUpload, UPLOAD_KIND } from '../upload'
 import type {
   ExternalFileInput,
@@ -61,7 +62,7 @@ export async function uploadFile(input: FileUploadInput): Promise<FileEntity> {
     input.storageType || FILE_STORAGE_TYPE.LOCAL,
     input.category,
   )
-  const data = ensureSuccess(res, '文件上传失败')
+  const data = ensureSuccess(res, i18n.global.t('uploader.uploadError'))
   return normalizeFileEntity(data)
 }
 
@@ -74,19 +75,19 @@ export async function createExternalFile(input: ExternalFileInput): Promise<File
     height: input.height,
     name: input.name,
   })
-  const data = ensureSuccess(res, '外链文件注册失败')
+  const data = ensureSuccess(res, i18n.global.t('editor.externalRegisterFailed'))
   return normalizeFileEntity(data)
 }
 
 export async function getFileById(id: string): Promise<FileEntity> {
   const res = await fetchGetFileById(id)
-  const data = ensureSuccess(res, '文件查询失败')
+  const data = ensureSuccess(res, i18n.global.t('common.requestFailed'))
   return normalizeFileEntity(data)
 }
 
 export async function deleteFileById(id: string): Promise<void> {
   const res = await fetchDeleteFile({ id })
-  ensureSuccess(res, '文件删除失败')
+  ensureSuccess(res, i18n.global.t('common.requestFailed'))
 }
 
 export async function getPresign(input: PresignInput): Promise<PresignResult> {
@@ -97,7 +98,7 @@ export async function getPresign(input: PresignInput): Promise<PresignResult> {
     input.size,
     input.category,
   )
-  return ensureSuccess(res, '预签名 URL 获取失败')
+  return ensureSuccess(res, i18n.global.t('uploader.uploadError'))
 }
 
 export async function updateFileMeta(input: UpdateFileMetaInput): Promise<FileEntity> {
@@ -107,7 +108,7 @@ export async function updateFileMeta(input: UpdateFileMetaInput): Promise<FileEn
     height: input.height,
     content_type: input.contentType,
   })
-  const data = ensureSuccess(res, '文件元数据回填失败')
+  const data = ensureSuccess(res, i18n.global.t('uploader.fileMetaFillbackFailed'))
   return normalizeFileEntity(data)
 }
 

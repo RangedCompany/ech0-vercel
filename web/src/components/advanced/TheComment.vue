@@ -12,7 +12,7 @@
 
     <template v-if="!commentsClosed || readOnly">
       <div class="mb-4 comment-list-board">
-        <div class="mb-3 flex items-center justify-between gap-2">
+        <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
           <button
             v-if="!readOnly"
             type="button"
@@ -96,7 +96,7 @@
               <BaseAvatar
                 :seed="previewAvatarSeed"
                 :size="18"
-                alt="avatar"
+                :alt="t('commentSection.avatar')"
                 class="h-[18px] w-[18px] shrink-0 rounded-full object-cover"
               />
               <span class="comment-preview-strip__name">{{ previewNickname }}</span>
@@ -169,12 +169,14 @@
             class="comment-card"
             :class="{ 'comment-anchor-flash': highlightedId === item.id }"
           >
-            <span v-if="item.hot" class="comment-hot-badge">Hot</span>
+            <span v-if="item.hot" class="comment-hot-badge">{{
+              t('commentSection.featured')
+            }}</span>
             <div class="comment-row">
               <BaseAvatar
                 :seed="getCommentAvatarSeed(item)"
                 :size="28"
-                alt="avatar"
+                :alt="t('commentSection.avatar')"
                 class="h-7 w-7 shrink-0 rounded-full object-cover"
               />
               <div class="min-w-0 flex-1">
@@ -221,7 +223,7 @@
                 <BaseAvatar
                   :seed="getCommentAvatarSeed(reply)"
                   :size="22"
-                  alt="avatar"
+                  :alt="t('commentSection.avatar')"
                   class="h-[22px] w-[22px] shrink-0 rounded-full object-cover"
                 />
                 <div class="min-w-0 flex-1">
@@ -244,7 +246,9 @@
                     />
                     <span class="comment-dot">·</span>
                     <span class="comment-time">{{ formatDate(reply.created_at) }}</span>
-                    <span v-if="reply.hot" class="comment-hot-inline">Hot</span>
+                    <span v-if="reply.hot" class="comment-hot-inline">{{
+                      t('commentSection.featured')
+                    }}</span>
                     <template v-if="parentNumberOf(reply)">
                       <span class="comment-dot">·</span>
                       <button
@@ -964,7 +968,7 @@ onBeforeUnmount(() => {
 .comment-count-text {
   color: var(--color-text-muted);
   font-size: 0.76rem;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .comment-form-panel {

@@ -26,7 +26,11 @@
     "add": "追加",
     "actions": "操作",
     "optional": "任意",
-    "none": "なし"
+    "none": "なし",
+    "expandOptions": "選択肢を表示",
+    "backToTop": "ページ上部に戻る",
+    "loading": "読み込み中…",
+    "startupLoading": "少々お待ちください"
   },
   "editor": {
     "tagPickerTooltip": "タグを選択",
@@ -398,7 +402,7 @@
   "homeNav": {
     "themeToggleTitle": "テーマを切替（次：{mode}）",
     "localeToggleTitle": "表示言語を切り替え",
-    "localeSyncFailed": "言語設定の同期に失敗しました",
+    "localeSyncFailed": "言語を変更できませんでした",
     "themeLight": "ライト",
     "themeDark": "ダーク",
     "themeSunny": "サニー"
@@ -456,10 +460,14 @@
     "publish": "投稿",
     "plaza": "探索",
     "status": "ステータス",
-    "tags": "タグ"
+    "tags": "タグ",
+    "version": "バージョン：{version}",
+    "navigationLabel": "メインナビゲーション"
   },
   "homeBio": {
-    "tagline": "ようこそ"
+    "tagline": "ようこそ",
+    "poweredBy": "Ech0 で動作",
+    "introLabel": "概要"
   },
   "homeFooter": {},
   "homeFeed": {
@@ -490,10 +498,12 @@
     "tooltipVersion": "バージョン",
     "jumpToEchoDetail": "対応する Echo の詳細を表示",
     "randomCommentLoading": "おすすめコメントを選んでいます...",
-    "noFeaturedComment": "表示できるおすすめコメントはありません。"
+    "noFeaturedComment": "表示できるおすすめコメントはありません。",
+    "title": "接続"
   },
   "heatmap": {
-    "tooltip": "{date}: {count} 件"
+    "tooltip": "{date}: {count} 件",
+    "title": "日々の活動"
   },
   "echoDetail": {
     "share": "シェア",
@@ -547,7 +557,9 @@
     "capVerifiedAriaLabel": "検証に成功しました",
     "capErrorAriaLabel": "検証に失敗しました。再試行してください",
     "publishedAt": "{time} にコメント一覧へ公開されました。",
-    "submittedAtPending": "{time} に送信しました。審査通過後、コメント一覧に表示されます。"
+    "submittedAtPending": "{time} に送信しました。審査通過後、コメント一覧に表示されます。",
+    "featured": "注目",
+    "avatar": "アバター"
   },
   "echoCard": {
     "privateStatus": "非公開",
@@ -682,7 +694,10 @@
     "deleteConfirmDesc": "削除するとこのデバイスからログインできなくなります。慎重に操作してください",
     "deleted": "削除しました",
     "newDeviceNamePrompt": "新しいデバイス名",
-    "updated": "更新しました"
+    "updated": "更新しました",
+    "passkey": "パスキー",
+    "rpId": "WebAuthn RP ID",
+    "origins": "WebAuthn オリジン"
   },
   "oauth2Setting": {
     "title": "OAuth2 設定",
@@ -720,7 +735,18 @@
     "redirectAllowlistInvalid": "Redirect Allowlist は http/https の URL である必要があります",
     "corsOriginsInvalid": "CORS Origins は http/https の URL である必要があります",
     "bindSuccess": "OAuth2 アカウントの連携に成功しました",
-    "bindFailed": "OAuth2 アカウントの連携に失敗しました。再試行してください"
+    "bindFailed": "OAuth2 アカウントの連携に失敗しました。再試行してください",
+    "clientId": "クライアント ID",
+    "clientSecret": "クライアントシークレット",
+    "callback": "コールバック URL",
+    "authUrl": "認可 URL",
+    "tokenUrl": "トークン URL",
+    "userInfoUrl": "ユーザー情報 URL",
+    "scopes": "スコープ",
+    "issuer": "発行者",
+    "jwks": "JWKS URL",
+    "redirectAllowlist": "許可するリダイレクト",
+    "corsOrigins": "許可する CORS オリジン"
   },
   "exportSetting": {
     "title": "データエクスポート",
@@ -1137,7 +1163,8 @@
   },
   "recentCard": {
     "mysteriousRecent": "作者は最近ミステリアス〜",
-    "generating": "生成中..."
+    "generating": "生成中...",
+    "title": "最近の要約"
   },
   "websocket": {
     "invalidMessage": "無効な WebSocket メッセージを受信しました"
@@ -1315,5 +1342,27 @@
     "switchAccount": "アカウントを切り替え",
     "adminRequired": "デバイスのサインインを承認できるのは管理者のみです。",
     "securityHint": "自分のターミナルで開始したコードのみ承認してください。"
+  },
+  "seo": {
+    "defaultDescription": "Ech0 は、アイデアやメモ、リンクを共有できる軽量なセルフホスト型のオープンソースマイクロブログです。",
+    "panel": "管理画面",
+    "widget": "ウィジェット",
+    "echo": "Echo",
+    "about": "概要",
+    "zen": "禅モード",
+    "homeDescription": "Ech0 のタイムラインでアイデア、メモ、リンクを投稿・閲覧できます。",
+    "panelDescription": "Ech0 インスタンスを管理・設定できます。",
+    "authDescription": "Ech0 にログインします。",
+    "deviceDescription": "この Ech0 インスタンスへの CLI ログインを許可します。",
+    "oauthDescription": "MCP クライアントによるこの Ech0 インスタンスへのアクセスを許可します。",
+    "widgetDescription": "他のサイトに埋め込める Ech0 ウィジェットです。",
+    "initDescription": "Ech0 インスタンスを初期化します。",
+    "hubDescription": "接続先の Ech0 インスタンスの投稿を見つけます。",
+    "chatDescription": "AI を使って過去の Echo を振り返り、要約します。",
+    "zenDescription": "没入型のグリッドですべての Echo を閲覧できます。",
+    "echoDescription": "共有された Ech0 の投稿を読みます。",
+    "aboutDescription": "この Ech0 インスタンスの著作権、ライセンス、クレジットです。",
+    "privacyDescription": "この Ech0 インスタンスのプライバシーポリシーです。",
+    "notFoundDescription": "指定されたページが見つかりませんでした。"
   }
 }

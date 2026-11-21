@@ -42,8 +42,8 @@
           <slot name="suffix">
             <ComboboxButton
               class="ml-1 text-[var(--color-text-muted)]"
-              aria-label="展开选项列表"
-              v-tooltip="'展开选项列表'"
+              :aria-label="$t('commonUi.expandOptions')"
+              v-tooltip="$t('commonUi.expandOptions')"
             >
             </ComboboxButton>
           </slot>

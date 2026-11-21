@@ -59,7 +59,7 @@
               rel="noopener noreferrer"
               class="home-aside__version"
             >
-              version: {{ settingStore.hello?.version || '--' }}
+              {{ t('homeSidebar.version', { version: settingStore.hello?.version || '--' }) }}
             </a>
           </div>
         </aside>
@@ -81,6 +81,7 @@ import TheChatLauncher from './TheChatLauncher.vue'
 import { defineAsyncComponent, onMounted, ref, onBeforeUnmount, computed, watch } from 'vue'
 import { useEchoStore, useUserStore, useSettingStore, useConnectStore } from '@/stores'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import {
   TheCommentWidget,
@@ -90,6 +91,7 @@ import {
 } from '@/components/advanced/widget'
 
 const route = useRoute()
+const { t } = useI18n()
 const TheEditor = defineAsyncComponent(() => import('./TheEditor.vue'))
 const TheTagsManager = defineAsyncComponent(() => import('./TheEditor/TheTagsManager.vue'))
 const HubPage = defineAsyncComponent(() => import('@/views/hub/modules/HubPage.vue'))
@@ -177,102 +179,28 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .home-page {
-  --home-canvas: var(--color-bg-canvas, #f5f3ef);
-  --home-accent: #e07020;
-  --home-main-max: 28rem;
-
   min-height: 100dvh;
-  background: var(--home-canvas);
+  background: var(--color-bg-canvas);
   color: var(--color-text-primary);
 }
 
-@media (width >= 820px) {
-  .home-page {
-    height: 100dvh;
-    overflow: hidden;
-  }
-}
-
 .home-shell {
-  max-width: 50rem;
-  margin: 1rem auto 2.5rem;
-  padding: 0 0.75rem;
-}
-
-@media (width >= 640px) {
-  .home-shell {
-    margin-top: 1.25rem;
-    margin-bottom: 2rem;
-    padding: 0 1rem;
-  }
-}
-
-@media (width >= 820px) {
-  .home-shell {
-    margin: 0 auto;
-    padding: 0 1rem;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
+  max-width: 86rem;
+  margin-inline: auto;
+  padding: 1rem clamp(0.75rem, 3vw, 3rem) 2rem;
 }
 
 .home-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  align-items: stretch;
-  background: transparent;
-}
-
-@media (width >= 820px) {
-  .home-layout {
-    flex: 1;
-    min-height: 0;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    gap: clamp(1.25rem, 4vw, 2rem);
-    padding: 0;
-  }
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .home-main-track {
-  width: 100%;
-  max-width: var(--home-main-max);
-  margin-left: auto;
-  margin-right: auto;
+  min-width: 0;
 }
 
 .home-main {
-  width: 100%;
   min-width: 0;
-  flex: 1 1 auto;
-  overflow-x: visible;
-}
-
-@media (width >= 820px) {
-  .home-main {
-    min-height: 0;
-    align-self: stretch;
-    overflow-y: auto;
-
-    /* No visible scrollbar: scrolling stays wheel/touch/keyboard-driven and
-       nothing near the right edge can be mis-grabbed. */
-    scrollbar-width: none;
-    overscroll-behavior: contain;
-    flex: 0 1 var(--home-main-max);
-    max-width: var(--home-main-max);
-    padding: 1.5rem 0 2rem;
-  }
-
-  .home-main::-webkit-scrollbar {
-    display: none;
-  }
-
-  .home-main--unclipped {
-    overflow: visible auto;
-  }
 }
 
 .home-aside {
@@ -314,7 +242,8 @@ onBeforeUnmount(() => {
 }
 
 .home-content-block--publish {
-  padding-inline: 0;
+  max-width: 50rem;
+  margin-inline: auto;
 }
 
 .home-status-widgets {
@@ -323,45 +252,61 @@ onBeforeUnmount(() => {
   gap: 0.75rem;
 }
 
-@media (width >= 768px) {
-  .home-content-block--publish {
-    padding-inline: 1.75rem;
-  }
-}
-
-@media (width >= 1024px) {
-  .home-content-block--publish {
-    padding-inline: 2rem;
-  }
-}
-
 .home-aside--mobile {
-  display: flex;
   margin-top: 0.5rem;
   margin-bottom: 0.75rem;
 }
 
-@media (width >= 820px) {
-  .home-aside--mobile {
-    display: none !important;
-  }
-
-  .home-aside--rail {
-    display: flex;
-    width: 14rem;
-    flex-shrink: 0;
-    align-self: flex-start;
-    margin-top: 1.5rem;
-  }
+.home-aside--rail {
+  display: none;
 }
 
-@media (width <= 819.98px) {
-  .home-banner--mobile-hidden {
+/* The same breakpoint separates the rail from the inline navigation in HomeSidebarNav. */
+@media (width >= 820px) {
+  .home-page {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .home-shell {
+    height: 100%;
+    padding-block: 0;
+  }
+
+  .home-layout {
+    height: 100%;
+    grid-template-columns: minmax(0, 1fr) clamp(13rem, 21vw, 17rem);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+  }
+
+  .home-main {
+    min-height: 0;
+    padding: clamp(1.5rem, 4vh, 3rem) 0 2rem;
+    overflow-y: auto;
+    scrollbar-width: none;
+    overscroll-behavior: contain;
+  }
+
+  .home-main--unclipped {
+    overflow: visible auto;
+  }
+
+  .home-aside--mobile {
     display: none;
   }
 
   .home-aside--rail {
-    display: none !important;
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    padding-block: clamp(1.5rem, 4vh, 3rem) 1rem;
+    overflow-y: auto;
+  }
+}
+
+@media (width < 820px) {
+  .home-banner--mobile-hidden {
+    display: none;
   }
 }
 </style>

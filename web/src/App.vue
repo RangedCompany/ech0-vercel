@@ -282,4 +282,14 @@ onMounted(() => {
   opacity: 0;
   transform: translateX(20px);
 }
+
+@media (width < 640px) {
+  /* Horizontal route transitions would temporarily extend the document edge. */
+  .slide-left-enter-from,
+  .slide-left-leave-to,
+  .slide-right-enter-from,
+  .slide-right-leave-to {
+    transform: none;
+  }
+}
 </style>

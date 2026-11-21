@@ -4,7 +4,9 @@
   <PanelCard>
     <div class="w-full">
       <div class="flex flex-row items-center justify-between mb-3">
-        <h1 class="text-[var(--color-text-primary)] font-bold text-lg">Passkey</h1>
+        <h1 class="text-[var(--color-text-primary)] font-bold text-lg">
+          {{ t('passkeySetting.passkey') }}
+        </h1>
         <BaseEditCapsule
           :editing="passkeyEditMode"
           :apply-title="t('commonUi.apply')"
@@ -69,7 +71,11 @@
         <div
           class="flex flex-row items-center justify-start text-[var(--color-text-secondary)] gap-2 h-10"
         >
-          <h3 class="font-semibold min-w-40 w-max shrink-0 whitespace-nowrap">WebAuthn RP ID:</h3>
+          <h3
+            class="font-semibold basis-2/5 shrink-0 break-words leading-tight sm:basis-auto sm:min-w-40"
+          >
+            {{ t('passkeySetting.rpId') }} :
+          </h3>
           <span v-if="!passkeyEditMode" class="flex-1 min-w-0 truncate inline-block align-middle">
             {{ passkeySetting.webauthn_rp_id || t('commonUi.none') }}
           </span>
@@ -84,7 +90,11 @@
         <div
           class="flex flex-row items-center justify-start text-[var(--color-text-secondary)] gap-2 h-10"
         >
-          <h3 class="font-semibold min-w-40 w-max shrink-0 whitespace-nowrap">WebAuthn Origins:</h3>
+          <h3
+            class="font-semibold basis-2/5 shrink-0 break-words leading-tight sm:basis-auto sm:min-w-40"
+          >
+            {{ t('passkeySetting.origins') }} :
+          </h3>
           <span v-if="!passkeyEditMode" class="flex-1 min-w-0 truncate inline-block align-middle">
             {{
               passkeySetting.webauthn_allowed_origins.length === 0
@@ -221,7 +231,7 @@ import { theToast } from '@/utils/toast'
 import { useBaseDialog } from '@/composables/useBaseDialog'
 import { base64urlToUint8Array, uint8ArrayToBase64url } from '@/utils/other'
 const { openConfirm } = useBaseDialog()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const supported = !!(window.PublicKeyCredential && navigator.credentials)
 const busy = ref(false)
@@ -326,7 +336,7 @@ function formatTime(v: number) {
   if (!v) return String(t('commonUi.none'))
   const d = new Date(v * 1000)
   if (Number.isNaN(d.getTime())) return String(v)
-  return d.toLocaleString()
+  return d.toLocaleString(locale.value)
 }
 
 async function refresh() {
@@ -349,10 +359,10 @@ async function refreshHealthCheck() {
   }
   const missing: string[] = []
   if (!passkeySetting.value.webauthn_rp_id) {
-    missing.push('WebAuthn RP ID')
+    missing.push(String(t('passkeySetting.rpId')))
   }
   if ((passkeySetting.value.webauthn_allowed_origins || []).length === 0) {
-    missing.push('WebAuthn Origins')
+    missing.push(String(t('passkeySetting.origins')))
   }
   missingBoundaryItems.value = missing
 }

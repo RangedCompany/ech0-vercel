@@ -19,6 +19,7 @@ import {
 import type { ExportFormat, ExportStatusPayload } from '@/service/api'
 import { S3Provider, OAuth2Provider, AgentProtocol } from '@/enums/enums'
 import { useUserStore } from './user'
+import { DEFAULT_LOCALE, i18n, normalizeLocale, setI18nSiteLocale } from '@/locales'
 
 const SNAPSHOT_STATUS_POLL_INTERVAL_MS = 3000
 type SnapshotUIStatus = 'idle' | 'pending' | 'running' | 'success' | 'failed' | 'cancelled'
@@ -33,7 +34,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     server_name: import.meta.env.VITE_APP_NAME,
     server_url: '',
     allow_register: true,
-    default_locale: 'zh-CN',
+    default_locale: DEFAULT_LOCALE,
     ICP_number: '',
     footer_content: '',
     footer_link: '',
@@ -108,10 +109,14 @@ export const useSettingStore = defineStore('settingStore', () => {
   const snapshotPollInFlight = ref<boolean>(false)
 
   const getSystemSetting = async () => {
-    await fetchGetSettings().then((res) => {
+    await fetchGetSettings().then(async (res) => {
       if (res.code === 1) {
-        SystemSetting.value = res.data
+        SystemSetting.value = {
+          ...res.data,
+          default_locale: normalizeLocale(res.data.default_locale) ?? DEFAULT_LOCALE,
+        }
         loading.value = false
+        await setI18nSiteLocale(SystemSetting.value.default_locale, userStore.user)
       }
     })
   }
@@ -141,9 +146,9 @@ export const useSettingStore = defineStore('settingStore', () => {
         Webhooks.value = res.data || []
         return
       }
-      webhooksError.value = res.msg || 'Failed to load webhooks'
-    } catch (error) {
-      webhooksError.value = error instanceof Error ? error.message : 'Failed to load webhooks'
+      webhooksError.value = res.msg || i18n.global.t('webhookSetting.loadFailed')
+    } catch {
+      webhooksError.value = i18n.global.t('webhookSetting.loadFailed')
     } finally {
       webhooksLoading.value = false
     }
@@ -207,8 +212,8 @@ export const useSettingStore = defineStore('settingStore', () => {
           return
         }
       }
-    } catch (error) {
-      snapshotError.value = error instanceof Error ? error.message : 'Failed to poll export status'
+    } catch {
+      snapshotError.value = i18n.global.t('exportSetting.exportFailed')
     } finally {
       snapshotPollInFlight.value = false
     }

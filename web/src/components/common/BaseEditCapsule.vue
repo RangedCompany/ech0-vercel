@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Edit from '@/components/icons/edit.vue'
 import Close from '@/components/icons/close.vue'
 import Saveupdate from '@/components/icons/saveupdate.vue'
@@ -46,9 +47,6 @@ const props = withDefaults(
     busy?: boolean
   }>(),
   {
-    editTitle: '编辑',
-    cancelTitle: '取消',
-    applyTitle: '应用',
     saveShortcut: true,
     busy: false,
   },
@@ -59,9 +57,14 @@ const emit = defineEmits<{
   toggle: []
 }>()
 
+const { t } = useI18n()
+const editTitle = computed(() => props.editTitle ?? t('commonUi.edit'))
+const cancelTitle = computed(() => props.cancelTitle ?? t('commonUi.cancel'))
+const applyTitle = computed(() => props.applyTitle ?? t('commonUi.apply'))
+
 const saveShortcutLabel = isMac ? '⌘S' : 'Ctrl+S'
 const applyTooltip = computed(() =>
-  props.saveShortcut ? `${props.applyTitle} (${saveShortcutLabel})` : props.applyTitle,
+  props.saveShortcut ? `${applyTitle.value} (${saveShortcutLabel})` : applyTitle.value,
 )
 
 useSaveShortcut({

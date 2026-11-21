@@ -3,15 +3,23 @@
 <template>
   <div class="home-sidebar-nav">
     <div class="home-sidebar-nav__mobile-row">
-      <nav class="home-sidebar-nav__nav" aria-label="Primary">
+      <nav class="home-sidebar-nav__nav" :aria-label="t('homeSidebar.navigationLabel')">
         <RouterLink
           v-for="item in visibleItems"
           :key="item.id"
           :to="item.to"
-          class="home-sidebar-nav__link"
-          :class="{ 'home-sidebar-nav__link--active': isItemActive(item) }"
+          custom
+          v-slot="{ href, navigate }"
         >
-          {{ t(item.labelKey) }}
+          <a
+            :href="href"
+            :aria-current="isItemActive(item) ? 'page' : undefined"
+            class="home-sidebar-nav__link"
+            :class="{ 'home-sidebar-nav__link--active': isItemActive(item) }"
+            @click="navigate"
+          >
+            {{ t(item.labelKey) }}
+          </a>
         </RouterLink>
       </nav>
       <button
@@ -181,6 +189,7 @@ watch(showSearchTrigger, (visible) => {
 
 .home-sidebar-nav__link {
   display: block;
+  overflow-wrap: anywhere;
   padding: 0.4rem 0.7rem;
   border-radius: var(--radius-xs);
   font-size: 0.9375rem;
@@ -231,22 +240,23 @@ watch(showSearchTrigger, (visible) => {
   fill: currentColor;
 }
 
-@media (width <= 819.98px) {
-  .home-sidebar-nav__nav {
-    flex-direction: row;
-    gap: 0.2rem;
-    overflow-x: auto;
-    white-space: nowrap;
+@media (width < 820px) {
+  .home-sidebar-nav__mobile-row {
+    align-items: flex-start;
+    gap: 0.375rem;
   }
 
-  .home-sidebar-nav__nav::-webkit-scrollbar {
-    display: none;
+  .home-sidebar-nav__nav {
+    flex-flow: row wrap;
+    gap: 0.25rem;
   }
 
   .home-sidebar-nav__link {
-    flex: 0 0 auto;
-    padding: 0.3rem 0.5rem;
-    border-radius: var(--radius-xs);
+    display: flex;
+    align-items: center;
+    min-height: 2rem;
+    max-width: 100%;
+    padding: 0.35rem 0.5rem;
     font-size: 0.9rem;
     line-height: 1.2;
   }
@@ -257,6 +267,8 @@ watch(showSearchTrigger, (visible) => {
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
+    min-width: 2rem;
+    min-height: 2rem;
     padding: 0.2rem;
     border-radius: 0.375rem;
     color: var(--color-text-muted);

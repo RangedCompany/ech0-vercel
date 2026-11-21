@@ -22,8 +22,11 @@ const readLocale = (name) => {
 }
 
 const base = readLocale('zh-CN.json')
+const english = readLocale('en-US.json')
+const french = readLocale('fr-FR.json')
 const targets = [
-  { name: 'en-US', data: readLocale('en-US.json') },
+  { name: 'fr-FR', data: french },
+  { name: 'en-US', data: english },
   { name: 'de-DE', data: readLocale('de-DE.json') },
   { name: 'ja-JP', data: readLocale('ja-JP.json') },
 ]
@@ -52,6 +55,16 @@ for (const { name, data } of targets) {
       console.error(`- Missing in zh-CN (${missingInBase.length})`)
       missingInBase.forEach((k) => console.error(`  - ${k}`))
     }
+  }
+}
+
+const placeholders = (value) => [...new Set(value.match(/\{[^{}]+\}/g))].sort().join(' ')
+
+for (const [key, reference] of english) {
+  const translated = french.get(key)
+  if (!translated?.trim() || placeholders(reference) !== placeholders(translated)) {
+    hasError = true
+    console.error(`Empty translation or interpolation mismatch in fr-FR: ${key}`)
   }
 }
 

@@ -60,18 +60,13 @@ func (userService *UserService) InitOwner(registerDto *authModel.RegisterDto) er
 	}
 	email := strings.TrimSpace(registerDto.Email)
 	if email == "" {
-		return errors.New("邮箱不能为空")
+		return errors.New(commonModel.EMAIL_REQUIRED)
 	}
 	if _, err := mail.ParseAddress(email); err != nil {
-		return errors.New("邮箱格式无效")
+		return errors.New(commonModel.EMAIL_INVALID)
 	}
 
-	ownerLocale := string(commonModel.DefaultLocale)
-	if requested := strings.TrimSpace(registerDto.Locale); requested != "" {
-		if resolved := i18nUtil.ResolveLocale(requested); resolved != "" {
-			ownerLocale = resolved
-		}
-	}
+	ownerLocale := i18nUtil.ResolveLocale(registerDto.Locale)
 
 	if err := ensurePasswordLength(registerDto.Password); err != nil {
 		return err
@@ -161,7 +156,7 @@ func (userService *UserService) Register(registerDto *authModel.RegisterDto) err
 	email := strings.TrimSpace(registerDto.Email)
 	if email != "" {
 		if _, err := mail.ParseAddress(email); err != nil {
-			return errors.New("邮箱格式无效")
+			return errors.New(commonModel.EMAIL_INVALID)
 		}
 	}
 
@@ -170,7 +165,6 @@ func (userService *UserService) Register(registerDto *authModel.RegisterDto) err
 		Email:    email,
 		IsAdmin:  false,
 		IsOwner:  false,
-		Locale:   string(commonModel.DefaultLocale),
 	}
 
 	user, err := userService.userRepository.GetUserByUsername(context.Background(), newUser.Username)
@@ -184,6 +178,11 @@ func (userService *UserService) Register(registerDto *authModel.RegisterDto) err
 	}
 	if !sysSetting.AllowRegister {
 		return errors.New(commonModel.USER_REGISTER_NOT_ALLOW)
+	}
+	if requested := strings.TrimSpace(registerDto.Locale); requested != "" {
+		newUser.Locale = i18nUtil.ResolveLocale(requested)
+	} else {
+		newUser.Locale = sysSetting.DefaultLocale
 	}
 	if err := userService.transactor.Run(context.Background(), func(ctx context.Context) error {
 		if err := userService.userRepository.CreateUser(ctx, &newUser); err != nil {

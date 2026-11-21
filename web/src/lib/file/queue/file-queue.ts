@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 lin-snow
 
+import { i18n } from '@/locales'
 import { ref } from 'vue'
 import { fileApiAdapter } from '../api/adapter'
 import type { FileApiAdapter } from '../api/adapter'
@@ -102,7 +103,7 @@ export class FileQueue {
       task.result = result
       nextStatus(task, 'success')
     } catch (err) {
-      const msg = err instanceof Error ? err.message : '上传失败'
+      const msg = err instanceof Error ? err.message : i18n.global.t('uploader.uploadError')
       if (task.attempt <= this.options.maxRetry && !task.cancelled) {
         nextStatus(task, 'retrying', msg)
         await new Promise((resolve) => setTimeout(resolve, 250))

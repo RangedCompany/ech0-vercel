@@ -5,8 +5,8 @@
     @click="scrollToTop"
     id="backToTop"
     type="button"
-    aria-label="返回顶部"
-    v-tooltip="'返回顶部'"
+    :aria-label="$t('commonUi.backToTop')"
+    v-tooltip="$t('commonUi.backToTop')"
     class="cursor-pointer rounded-full shadow hover:shadow-md bg-[var(--color-bg-surface)] ring-1 ring-inset ring-[var(--color-border-subtle)] z-50"
   >
     <Arrowup class="w-full h-full" />

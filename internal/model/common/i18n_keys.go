@@ -28,6 +28,22 @@ const (
 	MsgKeyAuthRefreshTokenInvalid     = "auth.refresh_token_invalid"
 	MsgKeyAuthExchangeCodeInvalid     = "auth.exchange_code_invalid"
 	MsgKeyAuthTokenGenerateFailed     = "auth.token_generate_failed"
+	MsgKeyAuthCredentialsRequired     = "auth.credentials_required"
+	MsgKeyAuthPasswordIncorrect       = "auth.password_incorrect"
+	MsgKeyAuthPasswordTooLong         = "auth.password_too_long"
+	MsgKeyUserNotFound                = "user.not_found"
+	MsgKeyUserNameTaken               = "user.name_taken"
+	MsgKeyUserEmailRequired           = "user.email_required"
+	MsgKeyUserEmailInvalid            = "user.email_invalid"
+	MsgKeyUserLimitReached            = "user.limit_reached"
+	MsgKeyUserRegistrationDisabled    = "user.registration_disabled"
+	MsgKeyInitAlreadyDone             = "init.already_done"
+	MsgKeyInitOwnerExists             = "init.owner_exists"
+	MsgKeyInitRequired                = "init.required"
+	MsgKeyAuthLoginSuccess            = "auth.login_success"
+	MsgKeyUserRegisterSuccess         = "user.register_success"
+	MsgKeyUserUpdateSuccess           = "user.update_success"
+	MsgKeyInitSuccess                 = "init.success"
 	MsgKeyDashboardLogsOk             = "dashboard.logs.success"
 	MsgKeyDashboardTailBad            = "dashboard.logs.tail_invalid"
 	MsgKeyDashboardCheckUpdateFailed  = "dashboard.check_update_failed"
@@ -57,6 +73,12 @@ func MessageKeyFromErrorCode(code string) string {
 		return MsgKeyAuthExchangeCodeInvalid
 	case ErrCodeTokenGenerateFailed:
 		return MsgKeyAuthTokenGenerateFailed
+	case ErrCodeInitAlreadyDone:
+		return MsgKeyInitAlreadyDone
+	case ErrCodeInitOwnerExists:
+		return MsgKeyInitOwnerExists
+	case ErrCodeInitInvalidState:
+		return MsgKeyInitRequired
 	default:
 		return ""
 	}
@@ -72,6 +94,34 @@ func MessageKeyFromMessage(msg string) string {
 		return MsgKeyAgentModelMissing
 	case ECHO_MIXED_FILE_CATEGORIES:
 		return MsgKeyEchoMixedFileCategories
+	case INVALID_REQUEST_BODY:
+		return MsgKeyCommonInvalidRequest
+	case USERNAME_OR_PASSWORD_NOT_BE_EMPTY:
+		return MsgKeyAuthCredentialsRequired
+	case PASSWORD_INCORRECT:
+		return MsgKeyAuthPasswordIncorrect
+	case PASSWORD_TOO_LONG:
+		return MsgKeyAuthPasswordTooLong
+	case USER_NOTFOUND:
+		return MsgKeyUserNotFound
+	case USERNAME_HAS_EXISTS:
+		return MsgKeyUserNameTaken
+	case EMAIL_REQUIRED:
+		return MsgKeyUserEmailRequired
+	case EMAIL_INVALID:
+		return MsgKeyUserEmailInvalid
+	case USER_COUNT_EXCEED_LIMIT:
+		return MsgKeyUserLimitReached
+	case USER_REGISTER_NOT_ALLOW:
+		return MsgKeyUserRegistrationDisabled
+	case LOGIN_SUCCESS:
+		return MsgKeyAuthLoginSuccess
+	case REGISTER_SUCCESS:
+		return MsgKeyUserRegisterSuccess
+	case UPDATE_USER_SUCCESS:
+		return MsgKeyUserUpdateSuccess
+	case INIT_OWNER_SUCCESS:
+		return MsgKeyInitSuccess
 	default:
 		return ""
 	}

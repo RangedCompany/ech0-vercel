@@ -8,6 +8,7 @@
       v-tooltip="t('homeNav.localeToggleTitle')"
       :aria-label="t('homeNav.localeToggleTitle')"
       :aria-expanded="open"
+      :disabled="saving"
       aria-haspopup="menu"
       class="locale-toggle__trigger"
       @click="open = !open"
@@ -41,7 +42,14 @@ import { useI18n } from 'vue-i18n'
 import { onClickOutside } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import LocaleIcon from '@/components/icons/locale.vue'
-import { setI18nLocale, LOCALE_OPTIONS, type AppLocale } from '@/locales'
+import {
+  applyI18nLocale,
+  prepareI18nLocale,
+  setBrowserLocale,
+  setMemberLocale,
+  LOCALE_OPTIONS,
+  type AppLocale,
+} from '@/locales'
 import { useUserStore } from '@/stores'
 import { fetchUpdateUser } from '@/service/api/user'
 import { theToast } from '@/utils/toast'
@@ -51,6 +59,7 @@ const userStore = useUserStore()
 const { user, isLogin } = storeToRefs(userStore)
 
 const open = ref(false)
+const saving = ref(false)
 const rootEl = ref<HTMLElement | null>(null)
 const triggerEl = ref<HTMLElement | null>(null)
 const menuEl = ref<HTMLElement | null>(null)
@@ -68,23 +77,44 @@ onClickOutside(
 )
 
 async function select(target: AppLocale) {
+  if (saving.value) return
   open.value = false
-  if (target === currentLocale.value) return
-  await setI18nLocale(target)
-  if (isLogin.value && user.value) {
-    user.value.locale = target
+  saving.value = true
+  const account = user.value
+  try {
+    if (!isLogin.value || !account) {
+      await setBrowserLocale(target)
+      return
+    }
+    if (!account.is_admin) {
+      await setMemberLocale(account, target)
+      return
+    }
+    if (target === account.locale) return
+
+    await prepareI18nLocale(target)
+    if (user.value !== account || !account.is_admin) return
+
     const payload: App.Api.User.UserInfo = {
-      username: user.value.username,
-      password: user.value.password ?? '',
-      email: user.value.email,
-      is_admin: user.value.is_admin,
-      is_owner: user.value.is_owner,
-      avatar: user.value.avatar ?? '',
+      username: account.username,
+      password: account.password ?? '',
+      email: account.email,
+      is_admin: account.is_admin,
+      is_owner: account.is_owner,
+      avatar: account.avatar ?? '',
       locale: target,
     }
-    fetchUpdateUser(payload).catch(() => {
+    const res = await fetchUpdateUser(payload)
+    if (res.code === 1 && user.value === account) {
+      account.locale = target
+      await applyI18nLocale(account)
+    } else if (res.code !== 1) {
       theToast.error(String(t('homeNav.localeSyncFailed')))
-    })
+    }
+  } catch {
+    theToast.error(String(t('homeNav.localeSyncFailed')))
+  } finally {
+    saving.value = false
   }
 }
 </script>

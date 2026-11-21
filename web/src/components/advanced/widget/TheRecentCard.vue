@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <!-- Copyright (C) 2025-2026 lin-snow -->
 <template>
-  <WidgetShell v-if="AgentSetting.enable" title="Recent AI" :fluid="fluid">
+  <WidgetShell v-if="AgentSetting.enable" :title="t('recentCard.title')" :fluid="fluid">
     <template #icon>
       <RecentIcon />
     </template>

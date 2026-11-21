@@ -9,6 +9,7 @@
         </h1>
         <div class="flex flex-row items-center justify-end">
           <BaseEditCapsule
+            v-if="user?.is_admin"
             :editing="editMode"
             :apply-title="t('commonUi.apply')"
             :cancel-title="t('commonUi.cancel')"
@@ -116,12 +117,23 @@
       <div
         class="flex flex-row items-center justify-start text-[var(--color-text-secondary)] gap-2 min-h-10 py-1"
       >
-        <h2 class="font-semibold min-w-28 md:min-w-36 shrink-0 break-words leading-5">
+        <label
+          for="account-locale"
+          class="font-semibold min-w-28 md:min-w-36 shrink-0 break-words leading-5"
+        >
           {{ t('userSetting.locale') }}:
-        </h2>
-        <span v-if="!editMode" class="flex-1 min-w-0 truncate">{{ localeLabel }}</span>
-        <div v-else class="w-full max-w-52">
-          <BaseSelect v-model="userInfo.locale" :options="localeOptions" class="w-full h-8" />
+        </label>
+        <span v-if="user?.is_admin && !editMode" class="flex-1 min-w-0 truncate">
+          {{ localeLabel }}
+        </span>
+        <div v-else-if="user" class="w-full max-w-52">
+          <BaseSelect
+            :model-value="user.is_admin ? userInfo.locale : locale"
+            :options="localeOptions"
+            id="account-locale"
+            class="w-full h-8"
+            @update:model-value="handleSelectLocale"
+          />
         </div>
       </div>
     </div>
@@ -143,10 +155,17 @@ import { resolveAvatarUrl } from '@/service/request/shared'
 import { FILE_CATEGORY, FILE_STORAGE_TYPE } from '@/constants/file'
 import { useFileQueue } from '@/lib/file'
 import { useI18n } from 'vue-i18n'
-import { setI18nLocale, LOCALE_ENDONYMS, LOCALE_OPTIONS, type AppLocale } from '@/locales'
+import {
+  DEFAULT_LOCALE,
+  LOCALE_ENDONYMS,
+  LOCALE_OPTIONS,
+  normalizeLocale,
+  prepareI18nLocale,
+  setMemberLocale,
+} from '@/locales'
 
 const userStore = useUserStore()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { refreshCurrentUser } = userStore
 const { user } = storeToRefs(userStore)
 const userInfo = ref<App.Api.User.UserInfo>({
@@ -156,7 +175,7 @@ const userInfo = ref<App.Api.User.UserInfo>({
   is_admin: false,
   avatar: '',
   avatar_file_id: '',
-  locale: 'zh-CN',
+  locale: DEFAULT_LOCALE,
 })
 
 const editMode = ref<boolean>(false)
@@ -184,29 +203,52 @@ const roleBadge = computed<{ label: string; className: string } | null>(() => {
   }
 })
 const localeOptions = LOCALE_OPTIONS
-const localeLabel = computed(
-  () => LOCALE_ENDONYMS[userInfo.value.locale as AppLocale] || LOCALE_ENDONYMS['zh-CN'],
-)
+const localeLabel = computed(() => LOCALE_ENDONYMS[normalizeLocale(locale.value) ?? DEFAULT_LOCALE])
 const { enqueueUpload, waitForTask, clearFinishedUploads } = useFileQueue()
 
+const handleSelectLocale = async (value: unknown) => {
+  const account = user.value
+  const selected = typeof value === 'string' ? normalizeLocale(value) : undefined
+  if (!account || !selected) return
+  if (account.is_admin) {
+    userInfo.value.locale = selected
+  } else {
+    try {
+      await setMemberLocale(account, selected)
+    } catch {
+      theToast.error(String(t('homeNav.localeSyncFailed')))
+    }
+  }
+}
+
 const handleUpdateUser = async () => {
-  if (saving.value) return
+  const account = user.value
+  if (saving.value || !account?.is_admin) return
   saving.value = true
-  await fetchUpdateUser(userInfo.value)
-    .then((res) => {
-      if (res.code === 1) {
-        theToast.success(res.msg)
-        void setI18nLocale(userInfo.value.locale)
-        editMode.value = false
+  const payload = { ...userInfo.value }
+  const target = normalizeLocale(payload.locale)
+  try {
+    if (target && target !== normalizeLocale(account.locale)) {
+      try {
+        await prepareI18nLocale(target)
+      } catch {
+        theToast.error(String(t('homeNav.localeSyncFailed')))
+        return
       }
-    })
-    .finally(() => {
-      saving.value = false
-      refreshCurrentUser()
-    })
-    .catch((err) => {
-      console.error(err)
-    })
+    }
+    if (user.value !== account || !account.is_admin) return
+
+    const res = await fetchUpdateUser(payload)
+    if (res.code === 1 && user.value === account) {
+      theToast.success(res.msg)
+      editMode.value = false
+      await refreshCurrentUser()
+    }
+  } catch (err) {
+    console.error(err)
+  } finally {
+    saving.value = false
+  }
 }
 
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -253,7 +295,7 @@ onMounted(() => {
       userInfo.value.avatar = res.data.avatar || ''
       userInfo.value.email = res.data.email || ''
       userInfo.value.is_admin = res.data.is_admin
-      userInfo.value.locale = res.data.locale || 'zh-CN'
+      userInfo.value.locale = normalizeLocale(res.data.locale) ?? locale.value
     }
   })
 })

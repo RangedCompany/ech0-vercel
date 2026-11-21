@@ -21,7 +21,7 @@
         >
           <img
             :src="getImageToAddUrl(file)"
-            alt="Image"
+            :alt="t('editor.mediaTypeImage')"
             class="w-full h-auto max-w-full object-cover"
             loading="lazy"
           />

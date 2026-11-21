@@ -155,6 +155,7 @@ func TestInitOwner_Success(t *testing.T) {
 	assert.True(t, created.IsOwner, "first user must be owner")
 	assert.True(t, created.IsAdmin, "owner must be admin")
 	assert.Equal(t, "owner@ech0.com", created.Email)
+	assert.Equal(t, "fr-FR", created.Locale)
 	assert.Equal(t, "owner-id", localAuth.UserID)
 	assert.Equal(t, cryptoUtil.AlgoBcrypt, localAuth.PasswordAlgo)
 	assert.True(t, cryptoUtil.CheckPassword(localAuth.PasswordAlgo, localAuth.PasswordHash, "secret"))
@@ -240,6 +241,7 @@ func TestRegister_Success(t *testing.T) {
 
 	assert.False(t, created.IsAdmin, "registered user must not be admin")
 	assert.False(t, created.IsOwner, "registered user must not be owner")
+	assert.Equal(t, "fr-FR", created.Locale)
 	assert.Equal(t, "newbie-id", localAuth.UserID)
 	assert.Equal(t, cryptoUtil.AlgoBcrypt, localAuth.PasswordAlgo)
 	assert.True(t, cryptoUtil.CheckPassword(localAuth.PasswordAlgo, localAuth.PasswordHash, "pw"))

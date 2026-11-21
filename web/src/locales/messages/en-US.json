@@ -26,7 +26,11 @@
     "add": "Add",
     "actions": "Actions",
     "optional": "Optional",
-    "none": "N/A"
+    "none": "N/A",
+    "expandOptions": "Show options",
+    "backToTop": "Back to top",
+    "loading": "Loading…",
+    "startupLoading": "A little moment, please"
   },
   "editor": {
     "tagPickerTooltip": "Pick tags",
@@ -398,7 +402,7 @@
   "homeNav": {
     "themeToggleTitle": "Toggle theme (next: {mode})",
     "localeToggleTitle": "Switch language",
-    "localeSyncFailed": "Failed to sync language preference",
+    "localeSyncFailed": "Could not change the language",
     "themeLight": "Light",
     "themeDark": "Dark",
     "themeSunny": "Sunny"
@@ -456,10 +460,14 @@
     "publish": "Publish",
     "plaza": "Explore",
     "status": "Status",
-    "tags": "Tags"
+    "tags": "Tags",
+    "version": "Version: {version}",
+    "navigationLabel": "Main navigation"
   },
   "homeBio": {
-    "tagline": "Welcome"
+    "tagline": "Welcome",
+    "poweredBy": "Powered by Ech0",
+    "introLabel": "Introduction"
   },
   "homeFooter": {},
   "homeFeed": {
@@ -490,10 +498,12 @@
     "tooltipVersion": "Version",
     "jumpToEchoDetail": "View related Echo details",
     "randomCommentLoading": "Picking a featured comment...",
-    "noFeaturedComment": "No featured comments to show."
+    "noFeaturedComment": "No featured comments to show.",
+    "title": "Connections"
   },
   "heatmap": {
-    "tooltip": "{date}: {count} entries"
+    "tooltip": "{date}: {count} entries",
+    "title": "Daily activity"
   },
   "echoDetail": {
     "share": "Share",
@@ -547,7 +557,9 @@
     "capVerifiedAriaLabel": "Verified",
     "capErrorAriaLabel": "An error occurred, please try again",
     "publishedAt": "Published at {time}.",
-    "submittedAtPending": "Submitted at {time}. It will appear after approval."
+    "submittedAtPending": "Submitted at {time}. It will appear after approval.",
+    "featured": "Featured",
+    "avatar": "Avatar"
   },
   "echoCard": {
     "privateStatus": "Private status",
@@ -682,7 +694,10 @@
     "deleteConfirmDesc": "After deletion, this device can no longer be used to sign in.",
     "deleted": "Deleted",
     "newDeviceNamePrompt": "New device name",
-    "updated": "Updated"
+    "updated": "Updated",
+    "passkey": "Passkey",
+    "rpId": "WebAuthn RP ID",
+    "origins": "WebAuthn origins"
   },
   "oauth2Setting": {
     "title": "OAuth2 Settings",
@@ -720,7 +735,18 @@
     "redirectAllowlistInvalid": "Redirect Allowlist must be valid http/https URLs",
     "corsOriginsInvalid": "CORS Origins must be valid http/https URLs",
     "bindSuccess": "OAuth2 account linked successfully",
-    "bindFailed": "OAuth2 account linking failed, please retry"
+    "bindFailed": "OAuth2 account linking failed, please retry",
+    "clientId": "Client ID",
+    "clientSecret": "Client secret",
+    "callback": "Callback URL",
+    "authUrl": "Authorization URL",
+    "tokenUrl": "Token URL",
+    "userInfoUrl": "User information URL",
+    "scopes": "Scopes",
+    "issuer": "Issuer",
+    "jwks": "JWKS URL",
+    "redirectAllowlist": "Allowed redirects",
+    "corsOrigins": "Allowed CORS origins"
   },
   "exportSetting": {
     "title": "Data Export",
@@ -1137,7 +1163,8 @@
   },
   "recentCard": {
     "mysteriousRecent": "The author has been mysterious lately~",
-    "generating": "Generating..."
+    "generating": "Generating...",
+    "title": "Recent summary"
   },
   "websocket": {
     "invalidMessage": "Received invalid WebSocket message"
@@ -1315,5 +1342,27 @@
     "switchAccount": "Switch account",
     "adminRequired": "Only administrators can approve device sign-ins.",
     "securityHint": "Only approve codes you started in your own terminal."
+  },
+  "seo": {
+    "defaultDescription": "Ech0 is a lightweight, open-source, self-hosted microblog for sharing ideas, notes, and links.",
+    "panel": "Administration",
+    "widget": "Widget",
+    "echo": "Echo",
+    "about": "About",
+    "zen": "Zen mode",
+    "homeDescription": "Ech0 home timeline for publishing and browsing thoughts, notes, and links.",
+    "panelDescription": "Ech0 management panel.",
+    "authDescription": "Sign in to your Ech0 workspace.",
+    "deviceDescription": "Approve a CLI sign-in request for this Ech0 instance.",
+    "oauthDescription": "Approve an MCP client request for this Ech0 instance.",
+    "widgetDescription": "Ech0 embeddable widget.",
+    "initDescription": "Initialize your Ech0 instance.",
+    "hubDescription": "Discover and explore curated content in Ech0 hub.",
+    "chatDescription": "Reflect on and summarize your past echos with AI.",
+    "zenDescription": "Browse all echos in an immersive masonry view.",
+    "echoDescription": "Read a shared Ech0 post.",
+    "aboutDescription": "Copyright, license and author information for this Ech0 instance.",
+    "privacyDescription": "Privacy policy for this Ech0 instance.",
+    "notFoundDescription": "Requested page was not found."
   }
 }

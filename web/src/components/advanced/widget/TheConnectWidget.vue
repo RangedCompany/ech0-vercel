@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <!-- Copyright (C) 2025-2026 lin-snow -->
 <template>
-  <WidgetShell title="Connect" :fluid="fluid">
+  <WidgetShell :title="t('connectWidget.title')" :fluid="fluid">
     <template #icon>
       <Connect />
     </template>
@@ -24,7 +24,7 @@
           >
             <img
               :src="connect.logo"
-              alt="avatar"
+              :alt="t('commentSection.avatar')"
               loading="lazy"
               decoding="async"
               class="w-full h-full rounded-full object-cover"

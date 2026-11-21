@@ -13,7 +13,7 @@
       </span>
     </span>
     <span v-if="label" class="loading-label">{{ label }}</span>
-    <span v-else class="sr-only">Loading</span>
+    <span v-else class="sr-only"> {{ $t('commonUi.loading') }} </span>
   </span>
 </template>
 

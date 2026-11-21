@@ -5,13 +5,15 @@ import { createI18n } from 'vue-i18n'
 import { localStg } from '@/utils/storage'
 
 export const LOCALE_STORAGE_KEY = 'locale'
-export const DEFAULT_LOCALE = 'zh-CN'
-export const FALLBACK_LOCALE = 'en-US'
-export const SUPPORTED_LOCALES = ['zh-CN', 'en-US', 'de-DE', 'ja-JP'] as const
+export const DEFAULT_LOCALE = 'fr-FR'
+export const SUPPORTED_LOCALES = ['fr-FR', 'zh-CN', 'en-US', 'de-DE', 'ja-JP'] as const
 
 export type AppLocale = (typeof SUPPORTED_LOCALES)[number]
+type LocaleAccount = Pick<App.Api.User.User, 'id' | 'is_admin' | 'locale'>
+const accountLocaleKey = (id: string) => `${LOCALE_STORAGE_KEY}:account:${id}`
 
 export const LOCALE_ENDONYMS: Record<AppLocale, string> = {
+  'fr-FR': 'Français',
   'zh-CN': '简体中文',
   'en-US': 'English',
   'de-DE': 'Deutsch',
@@ -23,35 +25,38 @@ export const LOCALE_OPTIONS = SUPPORTED_LOCALES.map((value) => ({
   label: LOCALE_ENDONYMS[value],
 }))
 
-const loadedLocales = new Set<string>()
+const loadedLocales = new Set<AppLocale>()
+let siteLocale = normalizeLocale(document.documentElement.lang)
+let localeRevision = 0
 
-const toSupported = (raw?: string | null): AppLocale | null => {
-  const value = String(raw || '').trim()
-  if (!value) return null
-
-  const exact = SUPPORTED_LOCALES.find((locale) => locale.toLowerCase() === value.toLowerCase())
-  if (exact) return exact
-
-  const langPrefix = value.slice(0, 2).toLowerCase()
-  if (langPrefix === 'en') return 'en-US'
-  if (langPrefix === 'zh') return 'zh-CN'
-  if (langPrefix === 'de') return 'de-DE'
-  if (langPrefix === 'ja') return 'ja-JP'
-
-  return null
+export function normalizeLocale(raw?: string | null): AppLocale | undefined {
+  if (typeof raw !== 'string') return undefined
+  try {
+    const language = new Intl.Locale(raw.trim()).language
+    return SUPPORTED_LOCALES.find((locale) => locale.slice(0, 2) === language)
+  } catch {
+    return undefined
+  }
 }
 
-const normalizeLocale = (raw?: string | null): AppLocale => toSupported(raw) ?? FALLBACK_LOCALE
-
-const initialLocale =
-  toSupported(localStg.getItem<string>(LOCALE_STORAGE_KEY)) ||
-  toSupported(navigator.languages?.[0] || navigator.language) ||
-  FALLBACK_LOCALE
+function resolveI18nLocale(account?: LocaleAccount | null): AppLocale {
+  // Admins can sync their choice to the server; members can only choose it
+  // locally. A member's override must not follow other accounts or guests.
+  const memberLocale =
+    account?.id && !account.is_admin ? localStg.getItem<string>(accountLocaleKey(account.id)) : null
+  return (
+    normalizeLocale(memberLocale) ??
+    normalizeLocale(account?.locale) ??
+    normalizeLocale(localStg.getItem<string>(LOCALE_STORAGE_KEY)) ??
+    siteLocale ??
+    DEFAULT_LOCALE
+  )
+}
 
 export const i18n = createI18n({
   legacy: false,
   globalInjection: true,
-  locale: initialLocale,
+  locale: resolveI18nLocale(),
   fallbackLocale: DEFAULT_LOCALE,
   messages: {},
 })
@@ -63,23 +68,38 @@ async function loadLocaleMessages(locale: AppLocale) {
   loadedLocales.add(locale)
 }
 
-export async function setI18nLocale(locale: string): Promise<AppLocale> {
-  const normalized = normalizeLocale(locale)
-  await loadLocaleMessages(normalized)
-  i18n.global.locale.value = normalized
-  document.documentElement.setAttribute('lang', normalized)
-  localStg.setItem(LOCALE_STORAGE_KEY, normalized)
-  return normalized
+export async function prepareI18nLocale(locale: AppLocale): Promise<void> {
+  await Promise.all([
+    loadLocaleMessages(locale),
+    locale === DEFAULT_LOCALE ? undefined : loadLocaleMessages(DEFAULT_LOCALE),
+  ])
 }
 
-export async function setupI18n(defaultLocale?: string) {
-  const fromStorage = localStg.getItem<string>(LOCALE_STORAGE_KEY)
-  const fromNavigator = navigator.languages?.[0] || navigator.language
-  const locale =
-    toSupported(fromStorage) ||
-    toSupported(fromNavigator) ||
-    toSupported(defaultLocale) ||
-    FALLBACK_LOCALE
-  await setI18nLocale(locale)
-  return i18n
+async function activateLocale(locale: AppLocale, storageKey?: string): Promise<void> {
+  const revision = ++localeRevision
+  await prepareI18nLocale(locale)
+  if (revision !== localeRevision) return
+
+  // Do not persist an unavailable catalogue or an outdated selection.
+  if (storageKey) localStg.setItem(storageKey, locale)
+  i18n.global.locale.value = locale
+  document.documentElement.lang = locale
+}
+
+export function applyI18nLocale(account?: LocaleAccount | null): Promise<void> {
+  return activateLocale(resolveI18nLocale(account))
+}
+
+export function setBrowserLocale(locale: AppLocale): Promise<void> {
+  return activateLocale(locale, LOCALE_STORAGE_KEY)
+}
+
+export async function setMemberLocale(account: LocaleAccount, locale: AppLocale): Promise<void> {
+  if (account.is_admin || !account.id) return
+  await activateLocale(locale, accountLocaleKey(account.id))
+}
+
+export async function setI18nSiteLocale(defaultLocale: string, account?: LocaleAccount | null) {
+  siteLocale = normalizeLocale(defaultLocale)
+  await applyI18nLocale(account)
 }

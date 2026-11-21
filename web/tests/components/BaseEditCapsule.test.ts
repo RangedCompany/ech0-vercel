@@ -4,6 +4,9 @@
 import { mount, type VueWrapper } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vitest'
 import BaseEditCapsule from '@/components/common/BaseEditCapsule.vue'
+import { applyI18nLocale, i18n } from '@/locales'
+
+await applyI18nLocale({ id: 'admin', is_admin: true, locale: 'fr-FR' })
 
 type CapsuleProps = {
   editing?: boolean
@@ -16,7 +19,7 @@ const wrappers: VueWrapper[] = []
 const mountCapsule = (props: CapsuleProps = {}) => {
   const wrapper = mount(BaseEditCapsule, {
     props: { editing: true, ...props },
-    global: { directives: { tooltip: {} } },
+    global: { directives: { tooltip: {} }, plugins: [i18n] },
   })
   wrappers.push(wrapper)
   return wrapper
@@ -93,10 +96,11 @@ describe('BaseEditCapsule save shortcut', () => {
     expect(wrapper.get('button').attributes('aria-keyshortcuts')).toBeUndefined()
   })
 
-  it('advertises the shortcut on the apply button', () => {
+  it('advertises the shortcut and localized labels', () => {
     const wrapper = mountCapsule()
 
     expect(wrapper.get('button').attributes('aria-keyshortcuts')).toBe('Control+S Meta+S')
-    expect(wrapper.get('button').attributes('aria-label')).toMatch(/\((⌘S|Ctrl\+S)\)$/)
+    expect(wrapper.get('button').attributes('aria-label')).toMatch(/^Appliquer \((⌘S|Ctrl\+S)\)$/)
+    expect(wrapper.get('button[aria-label="Annuler"]').exists()).toBe(true)
   })
 })

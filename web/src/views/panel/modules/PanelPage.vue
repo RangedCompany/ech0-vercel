@@ -2,7 +2,7 @@
 <!-- Copyright (C) 2025-2026 lin-snow -->
 <template>
   <div class="panel-page-wrap mt-4">
-    <div class="panel-shell border p-4 mx-auto flex flex-col max-w-screen-lg w-full mb-12">
+    <div class="panel-shell border p-3 sm:p-4 mx-auto flex flex-col w-full mb-12">
       <section class="panel-welcome mb-5 md:mb-2">
         <div class="panel-welcome-main">
           <h1 class="panel-welcome-username">
@@ -15,14 +15,19 @@
           <p class="panel-welcome-tip">{{ t('panelPage.welcomeTip') }}</p>
         </div>
         <div class="panel-welcome-actions">
-          <BaseButton :icon="BackHand" @click="router.push('/')" class="panel-home-btn" />
+          <BaseButton
+            :icon="BackHand"
+            :aria-label="t('homeSidebar.home')"
+            @click="router.push('/')"
+            class="panel-home-btn"
+          />
         </div>
       </section>
 
-      <div class="md:hidden mb-6 px-2 flex justify-between items-center mb-3">
-        <div class="w-1/2">
+      <div class="md:hidden mb-3 px-2 flex gap-3 items-center">
+        <div class="flex-1 min-w-0">
           <BaseSelect
-            class="!focus:ring-0 h-9"
+            class="!focus:ring-0 h-9 w-full"
             v-model="selectedRoute"
             :options="routeOptions"
             :placeholder="t('panelPage.selectPage')"
@@ -50,7 +55,7 @@
         </div>
       </div>
 
-      <div class="mx-auto flex my-4 w-full max-w-screen-lg rounded-md panel-main">
+      <div class="mx-auto flex my-4 w-full rounded-md panel-main">
         <div class="hidden md:flex flex-col gap-2 w-52 pr-4 shrink-0 panel-nav">
           <BaseButton
             :icon="Dashboard"
@@ -200,7 +205,7 @@ const dateText = computed(() => {
 
 const getButtonClasses = (routeName: string) => {
   const baseClasses =
-    'w-full flex items-center gap-2 pl-3 py-1.5 rounded-[var(--radius-md)] transition-all duration-200 border-none !ring-0 justify-start bg-transparent whitespace-nowrap'
+    'w-full flex items-center gap-2 pl-3 py-1.5 rounded-[var(--radius-md)] transition-all duration-200 border-none !ring-0 justify-start bg-transparent text-left break-words'
   const activeClasses =
     currentRoute.value === routeName
       ? 'text-[var(--color-text-primary)]! bg-[var(--nav-link-active-bg)]! shadow-[var(--shadow-soft)]!'
@@ -210,7 +215,7 @@ const getButtonClasses = (routeName: string) => {
 }
 
 const getBottomButtonClasses = () => {
-  return 'w-full flex items-center gap-2 pl-3 py-1.5 rounded-[var(--radius-md)] transition-all duration-200 border-none !shadow-none !ring-0 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-muted)] justify-start bg-transparent whitespace-nowrap'
+  return 'w-full flex items-center gap-2 pl-3 py-1.5 rounded-[var(--radius-md)] transition-all duration-200 border-none !shadow-none !ring-0 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-muted)] justify-start bg-transparent text-left break-words'
 }
 
 const routeOptions = computed(() => [
@@ -261,10 +266,11 @@ const handleLogout = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.6rem 0.5rem 0;
+  padding: 0.6rem clamp(0.5rem, 2vw, 2rem) 0;
 }
 
 .panel-shell {
+  max-width: 82rem;
   border-color: var(--color-border-subtle);
   border-radius: var(--radius-lg);
   background: var(--color-bg-canvas);
@@ -280,7 +286,6 @@ const handleLogout = () => {
 }
 
 .panel-content {
-  max-width: 53rem;
   width: 100%;
   padding-left: 0.2rem;
 }
@@ -307,6 +312,7 @@ const handleLogout = () => {
   font-weight: 800;
   font-family: var(--font-family-display);
   letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
 }
 
 .panel-welcome-greeting {
@@ -317,7 +323,8 @@ const handleLogout = () => {
 }
 
 .panel-welcome-meta {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.45rem;
   margin-top: 0.35rem;
@@ -334,7 +341,6 @@ const handleLogout = () => {
   align-items: center;
   color: var(--color-text-secondary);
   font-size: 0.9rem;
-  white-space: nowrap;
   font-weight: 600;
 }
 
@@ -428,16 +434,11 @@ const handleLogout = () => {
     gap: 0.6rem;
   }
 
-  .panel-welcome-date {
-    white-space: normal;
-  }
-
   .panel-main {
     gap: 0;
   }
 
   .panel-content {
-    max-width: 100%;
     padding-left: 0;
   }
 }

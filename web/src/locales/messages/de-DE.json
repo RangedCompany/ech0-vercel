@@ -26,7 +26,11 @@
     "add": "Hinzufügen",
     "actions": "Aktionen",
     "optional": "Optional",
-    "none": "Keine"
+    "none": "Keine",
+    "expandOptions": "Optionen anzeigen",
+    "backToTop": "Nach oben",
+    "loading": "Wird geladen…",
+    "startupLoading": "Einen Moment bitte"
   },
   "editor": {
     "tagPickerTooltip": "Tags auswählen",
@@ -398,7 +402,7 @@
   "homeNav": {
     "themeToggleTitle": "Theme wechseln (nächstes: {mode})",
     "localeToggleTitle": "Sprache wechseln",
-    "localeSyncFailed": "Spracheinstellung konnte nicht synchronisiert werden",
+    "localeSyncFailed": "Die Sprache konnte nicht geändert werden",
     "themeLight": "Hell",
     "themeDark": "Dunkel",
     "themeSunny": "Sonnig"
@@ -456,10 +460,14 @@
     "publish": "Veröffentlichen",
     "plaza": "Erkunden",
     "status": "Status",
-    "tags": "Tags"
+    "tags": "Tags",
+    "version": "Version: {version}",
+    "navigationLabel": "Hauptnavigation"
   },
   "homeBio": {
-    "tagline": "Willkommen"
+    "tagline": "Willkommen",
+    "poweredBy": "Bereitgestellt von Ech0",
+    "introLabel": "Einführung"
   },
   "homeFooter": {},
   "homeFeed": {
@@ -490,10 +498,12 @@
     "tooltipVersion": "Version",
     "jumpToEchoDetail": "Zum zugehörigen Echo",
     "randomCommentLoading": "Ein hervorgehobener Kommentar wird ausgewählt…",
-    "noFeaturedComment": "Keine hervorgehobenen Kommentare vorhanden."
+    "noFeaturedComment": "Keine hervorgehobenen Kommentare vorhanden.",
+    "title": "Verbindungen"
   },
   "heatmap": {
-    "tooltip": "{date}: {count} Einträge"
+    "tooltip": "{date}: {count} Einträge",
+    "title": "Tägliche Aktivitäten"
   },
   "echoDetail": {
     "share": "Teilen",
@@ -547,7 +557,9 @@
     "capVerifiedAriaLabel": "Verifiziert",
     "capErrorAriaLabel": "Ein Fehler ist aufgetreten, bitte erneut versuchen",
     "publishedAt": "Veröffentlicht am {time}.",
-    "submittedAtPending": "Eingereicht am {time}. Wird nach Freigabe angezeigt."
+    "submittedAtPending": "Eingereicht am {time}. Wird nach Freigabe angezeigt.",
+    "featured": "Hervorgehoben",
+    "avatar": "Avatar"
   },
   "echoCard": {
     "privateStatus": "Privat",
@@ -682,7 +694,10 @@
     "deleteConfirmDesc": "Nach dem Löschen kann dieses Gerät nicht mehr zur Anmeldung genutzt werden.",
     "deleted": "Gelöscht",
     "newDeviceNamePrompt": "Neuer Gerätename",
-    "updated": "Aktualisiert"
+    "updated": "Aktualisiert",
+    "passkey": "Passkey",
+    "rpId": "WebAuthn-RP-ID",
+    "origins": "WebAuthn-Ursprünge"
   },
   "oauth2Setting": {
     "title": "OAuth2-Einstellungen",
@@ -720,7 +735,18 @@
     "redirectAllowlistInvalid": "Redirect Allowlist muss gültige http-/https-URLs enthalten",
     "corsOriginsInvalid": "CORS Origins müssen gültige http-/https-URLs enthalten",
     "bindSuccess": "OAuth2-Konto erfolgreich verknüpft",
-    "bindFailed": "OAuth2-Kontoverknüpfung fehlgeschlagen, bitte erneut versuchen"
+    "bindFailed": "OAuth2-Kontoverknüpfung fehlgeschlagen, bitte erneut versuchen",
+    "clientId": "Client-ID",
+    "clientSecret": "Client-Geheimnis",
+    "callback": "Rückruf-URL",
+    "authUrl": "Autorisierungs-URL",
+    "tokenUrl": "Token-URL",
+    "userInfoUrl": "Benutzerinfo-URL",
+    "scopes": "Berechtigungen",
+    "issuer": "Aussteller",
+    "jwks": "JWKS-URL",
+    "redirectAllowlist": "Erlaubte Weiterleitungen",
+    "corsOrigins": "Erlaubte CORS-Ursprünge"
   },
   "exportSetting": {
     "title": "Datenexport",
@@ -1137,7 +1163,8 @@
   },
   "recentCard": {
     "mysteriousRecent": "Der Autor war in letzter Zeit eher zurückhaltend…",
-    "generating": "Wird erstellt…"
+    "generating": "Wird erstellt…",
+    "title": "Letzte Zusammenfassung"
   },
   "websocket": {
     "invalidMessage": "Ungültige WebSocket-Nachricht empfangen"
@@ -1315,5 +1342,27 @@
     "switchAccount": "Konto wechseln",
     "adminRequired": "Nur Administratoren können Geräteanmeldungen genehmigen.",
     "securityHint": "Genehmige nur Codes, die du selbst im Terminal gestartet hast."
+  },
+  "seo": {
+    "defaultDescription": "Ech0 ist ein leichtgewichtiges, quelloffenes, selbst gehostetes Mikroblog für Ideen, Notizen und Links.",
+    "panel": "Verwaltung",
+    "widget": "Widget",
+    "echo": "Echo",
+    "about": "Über",
+    "zen": "Zen-Modus",
+    "homeDescription": "Ideen, Notizen und Links im Ech0-Feed veröffentlichen und lesen.",
+    "panelDescription": "Ech0 verwalten und konfigurieren.",
+    "authDescription": "Bei Ihrem Ech0-Bereich anmelden.",
+    "deviceDescription": "Eine CLI-Anmeldung für diese Ech0-Instanz genehmigen.",
+    "oauthDescription": "Einer MCP-Anwendung den Zugriff auf diese Ech0-Instanz erlauben.",
+    "widgetDescription": "Einbettbares Widget für Ech0.",
+    "initDescription": "Ihre Ech0-Instanz initialisieren.",
+    "hubDescription": "Beiträge von verbundenen Ech0-Instanzen entdecken.",
+    "chatDescription": "Frühere Echos mit KI durchsuchen und zusammenfassen.",
+    "zenDescription": "Alle Echos in einer ruhigen Rasteransicht lesen.",
+    "echoDescription": "Einen geteilten Ech0-Beitrag lesen.",
+    "aboutDescription": "Urheberrecht, Lizenz und Mitwirkende dieser Ech0-Instanz.",
+    "privacyDescription": "Datenschutzerklärung dieser Ech0-Instanz.",
+    "notFoundDescription": "Die angeforderte Seite wurde nicht gefunden."
   }
 }

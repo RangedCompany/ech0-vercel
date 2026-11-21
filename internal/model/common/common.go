@@ -48,8 +48,10 @@ const (
 	LocaleZhCN     Locale = "zh-CN"
 	LocaleEnUS     Locale = "en-US"
 	LocaleDeDE     Locale = "de-DE"
-	DefaultLocale         = LocaleZhCN
-	FallbackLocale        = LocaleEnUS
+	LocaleJaJP     Locale = "ja-JP"
+	LocaleFrFR     Locale = "fr-FR"
+	DefaultLocale         = LocaleFrFR
+	FallbackLocale        = LocaleFrFR
 )
 
 type KeyValue struct {

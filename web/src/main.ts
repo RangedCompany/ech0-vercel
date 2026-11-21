@@ -12,9 +12,7 @@ import App from './App.vue'
 import router from './router'
 import { initStores } from './stores/store-init'
 import { preloadMarkdown } from './editor/core/loader'
-import { useSettingStore } from './stores/setting'
-import { useInitStore } from './stores/init'
-import { setupI18n } from './locales'
+import { applyI18nLocale, i18n } from './locales'
 
 import BaseDialog from '@/components/common/BaseDialog.vue'
 
@@ -33,20 +31,16 @@ if ('scrollRestoration' in history) {
 // The timeline renders markdown immediately; both bootstrap tasks run in
 // parallel so the renderer is ready before the first row mounts.
 await Promise.all([
-  initStores().catch((e) => {
-    console.error('Failed to initialize stores:', e)
-  }),
+  applyI18nLocale().then(() =>
+    initStores().catch((e) => {
+      console.error('Failed to initialize stores:', e)
+    }),
+  ),
   preloadMarkdown().catch((e) => {
     console.error('Failed to load the markdown renderer:', e)
   }),
 ])
 
-const settingStore = useSettingStore()
-const initStore = useInitStore()
-const siteDefaultLocale = initStore.initialized
-  ? settingStore.SystemSetting.default_locale
-  : undefined
-const i18n = await setupI18n(siteDefaultLocale)
 const { default: FloatingVue } = await import('floating-vue')
 
 app.use(router)
@@ -71,6 +65,11 @@ app.component('BaseDialog', BaseDialog)
 app.mount('#app')
 
 const appLoader = document.getElementById('app-loader')
+const appLoaderLabel = appLoader?.querySelector('p')
+if (appLoaderLabel) {
+  appLoaderLabel.textContent = i18n.global.t('commonUi.startupLoading')
+  appLoaderLabel.lang = i18n.global.locale.value
+}
 let loaderCleared = false
 const clearStartupLoader = () => {
   if (loaderCleared) return
